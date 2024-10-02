@@ -26,6 +26,10 @@ EDITOR = 'ejc369@nyu.edu'
 DATE_RESP = 'Date'
 DATE = '2024-09-24'
 
+JOURNAL_EP = '/journal'
+JOURNAL_NAME = 'mcjes'
+JOURNAL_RESP = 'Journal Name'
+
 
 @api.route(HELLO_EP)
 class HelloWorld(Resource):
@@ -69,3 +73,15 @@ class JournalTitle(Resource):
             EDITOR_RESP: EDITOR,
             DATE_RESP: DATE,
         }
+
+
+@api.route(JOURNAL_EP)
+class JournalName(Resource):
+    """
+    The purpose of this class is to return Journal Name
+    """
+    def get(self):
+        """
+        A trivial endpoint to see if the server is running.
+        """
+        return {JOURNAL_RESP: JOURNAL_NAME}
