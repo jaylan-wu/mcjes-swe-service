@@ -25,7 +25,6 @@ EDITOR_RESP = 'Editor'
 EDITOR = 'ejc369@nyu.edu'
 DATE_RESP = 'Date'
 DATE = '2024-09-24'
-
 JOURNAL_EP = '/journal'
 JOURNAL_NAME = 'mcjes'
 JOURNAL_RESP = 'Journal Name'
