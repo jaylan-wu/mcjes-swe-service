@@ -37,7 +37,7 @@ people_dict = {
 }
 
 
-def get_people():
+def read():
     """
     Contract:
     - No arguments
@@ -56,7 +56,7 @@ def delete_person(_id):
     - Returns and deletes email if found
     - Returns None if email not in dict
     """
-    people = get_people()
+    people = read()
     if _id in people:
         del people[_id]
         return _id
