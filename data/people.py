@@ -64,7 +64,6 @@ def delete_person(_id):
         return None
 
 
-# TODO: Add roles for later usage when applicable
 def create_person(name: str, affiliation: str, email: str):
     """
     Contract:
