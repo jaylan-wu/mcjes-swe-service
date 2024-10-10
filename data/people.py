@@ -9,6 +9,7 @@ AFFILIATION = 'affiliation'
 EMAIL = 'email'
 
 # testing variables (TODO add more emails)
+CW_EMAIL = 'caw9180@nyu.edu'
 JW_EMAIL = 'jw6639@nyu.edu'
 SR_EMAIL = 'sr5826@nyu.edu'
 DEL_EMAIL = 'delete@nyu.edu'
@@ -63,5 +64,16 @@ def delete_person(_id):
         return None
 
 
-def create_person():
-    return
+#TODO: Add roles for later usage when applicable 
+def create_person(name: str, affiliation: str, email: str):
+    """
+    Contract:
+    - Takes in a Name, Affiliation, and Email
+    - Returns email if added, else it will raise an error 
+    - Creating/adding user email to dict 
+    """
+    if email in people_dict:
+        raise ValueError(f'Adding duplicate {email=}')
+    people_dict[email] = {NAME: name, AFFILIATION: affiliation,
+                          EMAIL: email}
+    return email
