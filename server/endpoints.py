@@ -11,7 +11,7 @@ from flask_cors import CORS
 # import werkzeug.exceptions as wz
 
 # import data classes
-# import data.people
+import data.people as ppl
 
 app = Flask(__name__)
 CORS(app)
@@ -115,5 +115,6 @@ class PersonDelete(Resource):
     """
     TODO edit comment
     """
-    def get(self, _id):
-        return
+    def delete(self, _id):
+        ret = ppl.delete_person(_id)
+        return {'Message':ret}
