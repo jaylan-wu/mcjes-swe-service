@@ -24,10 +24,15 @@ To set up the journal website locally, follow these steps:
    git clone https://github.com/jaylan-wu/mcjes-swe.git
    cd mcjes-swe
 
-2. Run the following commands:
+2. Make the development :
    ```bash
    make dev_env
-   make all_test
+   
+3. Run all the tests (to run properly):
+   ```bash
+   make all_tests
+4. Set up the local host:
+   ```bash
    ./local.sh
 
 ## Usage
