@@ -10,6 +10,9 @@ from flask_cors import CORS
 
 # import werkzeug.exceptions as wz
 
+# import data classes
+# import data.people
+
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
@@ -28,6 +31,7 @@ DATE = '2024-09-24'
 JOURNAL_EP = '/journal'
 JOURNAL_NAME = 'mcjes'
 JOURNAL_RESP = 'Journal Name'
+PEOPLE_EP = '/people'
 
 
 @api.route(HELLO_EP)
@@ -84,3 +88,32 @@ class JournalName(Resource):
         A trivial endpoint to see if the server is running.
         """
         return {JOURNAL_RESP: JOURNAL_NAME}
+
+
+# TODO add endpoints for people
+# need GET all people, GET single person, DEL single person
+@api.route(PEOPLE_EP)
+class People(Resource):
+    """
+    TODO edit comment
+    """
+    def get(self):
+        return
+
+
+@api.route(f'{PEOPLE_EP}/<_id>')
+class Person(Resource):
+    """
+    TODO edit comment
+    """
+    def get(self, _id):
+        return
+
+
+@api.route(f'{PEOPLE_EP}/delete/<_id>')
+class PersonDelete(Resource):
+    """
+    TODO edit comment
+    """
+    def get(self, _id):
+        return
