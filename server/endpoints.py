@@ -113,8 +113,11 @@ class Person(Resource):
 @api.route(f'{PEOPLE_EP}/delete/<_id>')
 class PersonDelete(Resource):
     """
-    TODO edit comment
+    The purpose of this is to Delete a single person.
     """
     def delete(self, _id):
+        """
+        Obtains id(email) and deletes using delete_person.
+        """
         ret = ppl.delete_person(_id)
         return {'Message':ret}
