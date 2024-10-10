@@ -29,11 +29,18 @@ people_dict = {
 }
 
 
-# TODO fill out following functions
 def get_people():
-    return
+    """
+    Contract:
+    - No arguments
+    - Returns a dictionary of users keyed on user email
+    - Each user email must be the key for dictionary entry
+    """
+    people = people_dict
+    return people
 
 
+# TODO fill out following functions
 def delete_person():
     return
 
