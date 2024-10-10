@@ -64,13 +64,13 @@ def delete_person(_id):
         return None
 
 
-#TODO: Add roles for later usage when applicable 
+# TODO: Add roles for later usage when applicable
 def create_person(name: str, affiliation: str, email: str):
     """
     Contract:
     - Takes in a Name, Affiliation, and Email
-    - Returns email if added, else it will raise an error 
-    - Creating/adding user email to dict 
+    - Returns email if added, else it will raise an error
+    - Creating/adding user email to dict
     """
     if email in people_dict:
         raise ValueError(f'Adding duplicate {email=}')
