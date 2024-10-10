@@ -10,6 +10,7 @@ EMAIL = 'email'
 
 # testing variables (TODO add more emails)
 JW_EMAIL = 'jw6639@nyu.edu'
+SR_EMAIL = 'sr5826@nyu.edu'
 DEL_EMAIL = 'delete@nyu.edu'
 
 people_dict = {
@@ -18,6 +19,12 @@ people_dict = {
         ROLES: [],
         AFFILIATION: 'New York University',
         EMAIL: JW_EMAIL,
+    },
+    SR_EMAIL: {
+        NAME: 'Saadat Rafin',
+        ROLES: [],
+        AFFILIATION: 'New York University',
+        EMAIL: SR_EMAIL,
     },
     DEL_EMAIL: {
         NAME: 'DELETE',
@@ -40,9 +47,20 @@ def get_people():
     return people
 
 
-# TODO fill out following functions
-def delete_person():
-    return
+def delete_person(_id):
+    """
+    Contract:
+    - Takes in id (unique email)
+    - Searches dictionary for id
+    - Returns and deletes email if found
+    - Returns None if email not in dict
+    """
+    people = get_people()
+    if _id in people:
+        del people[_id]
+        return _id
+    else:
+        return None
 
 
 def create_person():
