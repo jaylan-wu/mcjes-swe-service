@@ -120,4 +120,4 @@ class PersonDelete(Resource):
         Obtains id(email) and deletes using delete_person.
         """
         ret = ppl.delete_person(_id)
-        return {'Message':ret}
+        return {'Message': ret}
