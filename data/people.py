@@ -10,11 +10,18 @@ EMAIL = 'email'
 
 # testing variables (TODO add more emails)
 CW_EMAIL = 'caw9180@nyu.edu'
+ED_EMAIL = 'ed233@nyu.edu'
 JW_EMAIL = 'jw6639@nyu.edu'
 SR_EMAIL = 'sr5826@nyu.edu'
 DEL_EMAIL = 'delete@nyu.edu'
 
 people_dict = {
+    ED_EMAIL: {
+        NAME: 'Eduardo De Los Santos',
+        ROLES: [],
+        AFFILIATION: 'New York University',
+        EMAIL: ED_EMAIL,
+    },
     JW_EMAIL: {
         NAME: 'Jaylan Wu',
         ROLES: [],
