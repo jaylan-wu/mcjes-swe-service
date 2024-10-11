@@ -55,7 +55,7 @@ def read():
     return people
 
 
-def delete_person(_id):
+def delete(_id):
     """
     Contract:
     - Takes in id (unique email)
