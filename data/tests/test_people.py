@@ -2,6 +2,9 @@ import pytest
 
 import data.people as ppl
 
+# test variables
+ADD_EMAIL = "janedoe@nyu.edu"
+
 
 def test_read():
     people = ppl.read()
@@ -20,3 +23,17 @@ def test_delete():
     people = ppl.read()
     assert len(people) < old_len
     assert ppl.DEL_EMAIL not in people
+
+
+def test_create():
+    people = ppl.read()
+    assert ADD_EMAIL not in people
+    ppl.create('Joe Smith', 'NYU', ADD_EMAIL)
+    people = ppl.read()
+    assert ADD_EMAIL in people
+
+
+def test_create_dupe():
+    with pytest.raises(ValueError):
+        ppl.create('Do not care about name',
+                   'Or affiliation', ppl.JW_EMAIL)
