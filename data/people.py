@@ -40,7 +40,6 @@ people_dict = {
         AFFILIATION: 'New York University',
         EMAIL: DEL_EMAIL,
     },
-
 }
 
 
@@ -71,7 +70,7 @@ def delete(_id):
         return None
 
 
-def create_person(name: str, affiliation: str, email: str):
+def create(name: str, affiliation: str, email: str):
     """
     Contract:
     - Takes in a Name, Affiliation, and Email
@@ -83,3 +82,11 @@ def create_person(name: str, affiliation: str, email: str):
     people_dict[email] = {NAME: name, AFFILIATION: affiliation,
                           EMAIL: email}
     return email
+
+
+def main():
+    print(read())
+
+
+if __name__ == '__main__':
+    main()
