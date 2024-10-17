@@ -53,6 +53,20 @@ def read():
     people = people_dict
     return people
 
+def read(_id):
+    """
+    Contract:
+    - Takes in id (unique email)
+    - Searches dictionary for id
+    - Returns person from dictionary if there
+    - Returns None if no one is there
+    """
+    people = read()
+    if _id in people:
+        return people[_id]
+    else:
+        return None
+
 
 def delete(_id):
     """
