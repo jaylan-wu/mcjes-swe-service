@@ -4,6 +4,18 @@ import data.people as ppl
 
 # test variables
 ADD_EMAIL = "janedoe@nyu.edu"
+NO_AT = "janedoenyu.edu"
+NO_NAME = "@nyu.edu"
+NO_DOMAIN = "janedoe@"
+
+def test_is_valid_email_no_at():
+    assert not ppl.is_valid_email(NO_AT)
+
+def test_is_valid_email_no_name():
+    assert not ppl.is_valid_email(NO_NAME)
+
+def test_is_valid_email_no_domain():
+    assert not ppl.is_valid_email(NO_DOMAIN)
 
 
 def test_read():
