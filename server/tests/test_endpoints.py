@@ -8,6 +8,8 @@ from http.client import (
 )
 
 from unittest.mock import patch
+# import data classes
+import data.people as ppl
 
 import pytest # type: ignore
 
@@ -41,3 +43,11 @@ def test_journal():
     resp = TEST_CLIENT.get(ep.JOURNAL_ROUTE)
     resp_json = resp.get_json()
     assert ep.JOURNAL_RESP in resp_json
+
+def test_people():
+    resp = TEST_CLIENT.get(ep.PEOPLE_ROUTE)
+    resp_json = resp.get_json()
+    for _id, person in resp_json.items():
+        assert isinstance(_id, str)
+        assert len(_id) > 0
+        assert ppl.NAME in person
