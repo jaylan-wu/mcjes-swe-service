@@ -95,10 +95,14 @@ class People(Resource):
 @api.route(f'{PEOPLE_ROUTE}/<_id>')
 class Person(Resource):
     """
-    TODO edit comment
+    The purpose of this is to return a single person.
     """
     def get(self, _id):
-        return
+        """
+        Obtains id(email) and gets person from library with read_one.
+        """
+        ret = ppl.read_one(_id)
+        return {'Message': ret}
 
 
 @api.route(f'{PEOPLE_ROUTE}/delete/<_id>')

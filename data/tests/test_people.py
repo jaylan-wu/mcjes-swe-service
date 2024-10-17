@@ -16,6 +16,18 @@ def test_read():
         assert ppl.NAME in person     
 
 
+def test_read_one():
+    # sample data for testing
+    people = ppl.read()
+    assert isinstance(people, dict)
+    assert len(people) > 0
+    # test with a valid _id that exists in the people dictionary
+    valid_id = ppl.SR_EMAIL  # get the first key from the dictionary
+    person = ppl.read_one(valid_id)
+    assert person is not None
+    assert ppl.NAME in person 
+
+
 def test_delete():
     people = ppl.read()
     old_len = len(people)
