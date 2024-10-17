@@ -83,13 +83,17 @@ class JournalName(Resource):
 
 # TODO add endpoints for people
 # need GET all people, GET single person, DEL single person
+
 @api.route(PEOPLE_ROUTE)
 class People(Resource):
     """
-    TODO edit comment
+    The purpose of this is to class is to return all people
     """
     def get(self):
-        return
+        """
+        Retrieve all people
+        """
+        return ppl.read()
 
 
 @api.route(f'{PEOPLE_ROUTE}/<_id>')
