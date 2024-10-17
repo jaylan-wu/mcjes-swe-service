@@ -53,7 +53,8 @@ def read():
     people = people_dict
     return people
 
-def read(_id):
+
+def read_one(_id):
     """
     Contract:
     - Takes in id (unique email)
