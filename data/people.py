@@ -51,9 +51,15 @@ people_dict = {
 
 CHAR_OR_DIGIT = '[A-Za-z0-9]'
 
-
+'''
 def is_valid_email(email: str) -> bool:
     return re.match(f"{CHAR_OR_DIGIT}.*@{CHAR_OR_DIGIT}.*", email)
+'''
+
+
+def is_valid_email(email: str) -> bool:
+    pattern = f'^{CHAR_OR_DIGIT}+@[A-Za-z0-9.-]+\\.[A-Za-z]{{2,}}$'
+    return re.match(pattern, email) is not None
 
 
 def read():

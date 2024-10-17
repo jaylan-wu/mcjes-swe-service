@@ -7,6 +7,7 @@ ADD_EMAIL = "janedoe@nyu.edu"
 NO_AT = "janedoenyu.edu"
 NO_NAME = "@nyu.edu"
 NO_DOMAIN = "janedoe@"
+NO_EXT = "janedoe@nyu"
 
 def test_is_valid_email_no_at():
     assert not ppl.is_valid_email(NO_AT)
@@ -16,6 +17,10 @@ def test_is_valid_email_no_name():
 
 def test_is_valid_email_no_domain():
     assert not ppl.is_valid_email(NO_DOMAIN)
+
+def test_is_valid_email_no_ext():
+    assert not ppl.is_valid_email(NO_EXT)
+
 
 
 def test_read():
