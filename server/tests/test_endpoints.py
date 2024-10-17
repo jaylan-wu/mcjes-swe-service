@@ -51,3 +51,18 @@ def test_people():
         assert isinstance(_id, str)
         assert len(_id) > 0
         assert ppl.NAME in person
+
+def test_person():
+    person_id = ppl.CW_EMAIL
+    resp = TEST_CLIENT.get(f'{ep.PEOPLE_ROUTE}/{person_id}')
+    resp_json = resp.get_json()
+
+    assert resp.status_code == 200
+    assert 'Message' in resp_json
+
+    person = resp_json['Message']
+
+    assert isinstance(person, dict)
+    assert ppl.NAME in person
+    assert 'email' in person
+    assert isinstance(person['email'], str)

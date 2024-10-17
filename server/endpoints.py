@@ -81,9 +81,6 @@ class JournalName(Resource):
         return {JOURNAL_RESP: JOURNAL_NAME}
 
 
-# TODO add endpoints for people
-# need GET all people, GET single person, DEL single person
-
 @api.route(PEOPLE_ROUTE)
 class People(Resource):
     """

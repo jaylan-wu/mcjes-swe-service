@@ -16,6 +16,12 @@ SR_EMAIL = 'sr5826@nyu.edu'
 DEL_EMAIL = 'delete@nyu.edu'
 
 people_dict = {
+    CW_EMAIL: {
+        NAME: 'Cheyenne Williams',
+        ROLES: [],
+        AFFILIATION: 'New York University',
+        EMAIL: CW_EMAIL,
+    },
     ED_EMAIL: {
         NAME: 'Eduardo De Los Santos',
         ROLES: [],
