@@ -4,11 +4,18 @@ The endpoint called `endpoints` will return all available endpoints.
 """
 # from http import HTTPStatus
 
-from flask import Flask  # , request
-from flask_restx import Resource, Api  # Namespace, fields
-from flask_cors import CORS
+from flask import Flask  # type: ignore -> , request
+from flask_restx import Resource, Api   # type: ignore -> Namespace, fields
+from flask_cors import CORS  # type: ignore
 
 # import werkzeug.exceptions as wz
+
+# import routes and responses
+from server.routes import (ENDPOINT_ROUTE, HELLO_ROUTE, JOURNAL_ROUTE,
+                           PEOPLE_ROUTE, TITLE_ROUTE)
+from server.responses import (DATE, DATE_RESP, EDITOR, EDITOR_RESP,
+                              ENDPOINT_RESP, HELLO_RESP, JOURNAL_NAME,
+                              JOURNAL_RESP, TITLE, TITLE_RESP)
 
 # import data classes
 import data.people as ppl
@@ -17,24 +24,22 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-ENDPOINT_EP = '/endpoints'
-ENDPOINT_RESP = 'Available endpoints'
-HELLO_EP = '/hello'
-HELLO_RESP = 'hello'
-TITLE_EP = '/title'
-TITLE_RESP = 'Title'
-TITLE = 'The Journal of API Technology'
-EDITOR_RESP = 'Editor'
-EDITOR = 'ejc369@nyu.edu'
-DATE_RESP = 'Date'
-DATE = '2024-09-24'
-JOURNAL_EP = '/journal'
-JOURNAL_NAME = 'mcjes'
-JOURNAL_RESP = 'Journal Name'
-PEOPLE_EP = '/people'
+
+@api.route(ENDPOINT_ROUTE)
+class Endpoints(Resource):
+    """
+    This class will serve as live, fetchable documentation of what endpoints
+    are available in the system.
+    """
+    def get(self):
+        """
+        The `get()` method will return a sorted list of available endpoints.
+        """
+        endpoints = sorted(rule.rule for rule in api.app.url_map.iter_rules())
+        return {ENDPOINT_RESP: endpoints}
 
 
-@api.route(HELLO_EP)
+@api.route(HELLO_ROUTE)
 class HelloWorld(Resource):
     """
     The purpose of the HelloWorld class is to have a simple test to see if the
@@ -47,21 +52,7 @@ class HelloWorld(Resource):
         return {HELLO_RESP: 'world'}
 
 
-@api.route(ENDPOINT_EP)
-class Endpoints(Resource):
-    """
-    This class will serve as live, fetchable documentation of what endpoints
-    are available in the system.
-    """
-    def get(self):
-        """
-        The `get()` method will return a sorted list of available endpoints.
-        """
-        endpoints = sorted(rule.rule for rule in api.app.url_map.iter_rules())
-        return {"Available endpoints": endpoints}
-
-
-@api.route(TITLE_EP)
+@api.route(TITLE_ROUTE)
 class JournalTitle(Resource):
     """
     This class handles creating, reading, updating
@@ -78,7 +69,7 @@ class JournalTitle(Resource):
         }
 
 
-@api.route(JOURNAL_EP)
+@api.route(JOURNAL_ROUTE)
 class JournalName(Resource):
     """
     The purpose of this class is to return Journal Name
@@ -92,7 +83,7 @@ class JournalName(Resource):
 
 # TODO add endpoints for people
 # need GET all people, GET single person, DEL single person
-@api.route(PEOPLE_EP)
+@api.route(PEOPLE_ROUTE)
 class People(Resource):
     """
     TODO edit comment
@@ -101,7 +92,7 @@ class People(Resource):
         return
 
 
-@api.route(f'{PEOPLE_EP}/<_id>')
+@api.route(f'{PEOPLE_ROUTE}/<_id>')
 class Person(Resource):
     """
     TODO edit comment
@@ -110,7 +101,7 @@ class Person(Resource):
         return
 
 
-@api.route(f'{PEOPLE_EP}/delete/<_id>')
+@api.route(f'{PEOPLE_ROUTE}/delete/<_id>')
 class PersonDelete(Resource):
     """
     The purpose of this is to Delete a single person.

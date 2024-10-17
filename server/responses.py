@@ -1,0 +1,11 @@
+# Endpoint responses in alphabetical order
+DATE = '2024-09-24'
+DATE_RESP = 'Date'
+EDITOR = 'ejc369@nyu.edu'
+EDITOR_RESP = 'Editor'
+ENDPOINT_RESP = 'Available endpoints'
+HELLO_RESP = 'hello'
+JOURNAL_NAME = 'mcjes'
+JOURNAL_RESP = 'Journal Name'
+TITLE = 'The Journal of API Technology'
+TITLE_RESP = 'Title'
