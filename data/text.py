@@ -25,12 +25,18 @@ text_dict = {
 # Functions to work on
 
 
-def create():
-    pass
+def create(key: str, title: str, text: str):
+    if key not in text_dict:
+        text_dict[key] = {TITLE: title, TEXT: text}
+    else:
+        print(f'Key {key} already exists. Use update() to modify it.')
 
 
-def delete():
-    pass
+def delete(key: str, title: str, text: str):
+    if key in text_dict:
+        del text_dict[key]
+    else:
+        print(f'Key {key} does not exist. Use create() to create it.')
 
 
 def update():
