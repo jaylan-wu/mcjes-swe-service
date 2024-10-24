@@ -58,6 +58,12 @@ def is_valid_email(email: str) -> bool:
 
 
 def is_valid_email(email: str) -> bool:
+    """
+    Contract:
+    - Takes in email address (str)
+    - Checks for all email componants 
+    - Returns a boolean if email is valid 
+    """
     pattern = f'^{CHAR_OR_DIGIT}+@[A-Za-z0-9.-]+\\.[A-Za-z]{{2,}}$'
     return re.match(pattern, email) is not None
 
