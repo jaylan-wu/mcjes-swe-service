@@ -112,20 +112,6 @@ def delete(_id):
         return None
 
 
-def create(name: str, affiliation: str, email: str):
-    """
-    Contract:
-    - Takes in a Name, Affiliation, and Email
-    - Returns email if added, else it will raise an error
-    - Creating/adding user email to dict
-    """
-    if email in people_dict:
-        raise ValueError(f'Adding duplicate {email=}')
-    people_dict[email] = {NAME: name, AFFILIATION: affiliation,
-                          EMAIL: email}
-    return email
-
-
 def is_valid_person(name: str, affiliation: str, email: str,
                     role: str) -> bool:
     """
@@ -144,6 +130,39 @@ def is_valid_person(name: str, affiliation: str, email: str,
     if not rls.is_valid(role):
         raise ValueError(f'Invalid role: {role}')
     return True
+
+
+def create(name: str, affiliation: str, email: str):
+    """
+    Contract:
+    - Takes in a Name, Affiliation, and Email
+    - Returns email if added, else it will raise an error
+    - Creating/adding user email to dict
+    """
+    if email in people_dict:
+        raise ValueError(f'Adding duplicate {email=}')
+    people_dict[email] = {NAME: name, AFFILIATION: affiliation,
+                          EMAIL: email}
+    return email
+
+
+# TODO if person has role add records to people_w_role
+def get_masthead() -> dict:
+    """
+    Contract:
+    - No arguments
+    - Returns dictionary where keys are masthead role names and values are
+      dictionaries of people with those roles.
+    - Checks which people hold that role and organizes them into the masthead.
+    """
+    masthead = {}
+    mh_roles = rls.get_masthead_roles()
+    for mh_role, text in mh_roles.items():
+        people_w_role = {}
+        for person in read():
+            pass
+        masthead[text] = people_w_role
+    return masthead
 
 
 def main():
