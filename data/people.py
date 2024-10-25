@@ -3,6 +3,8 @@ In this module, we interface with the People Datatype
 """
 import re
 
+import data.roles as rls
+
 # data fields
 NAME = 'name'
 ROLES = 'roles'
@@ -122,6 +124,26 @@ def create(name: str, affiliation: str, email: str):
     people_dict[email] = {NAME: name, AFFILIATION: affiliation,
                           EMAIL: email}
     return email
+
+
+def is_valid_person(name: str, affiliation: str, email: str,
+                    role: str) -> bool:
+    """
+    Contract:
+    - Takes in a Name, Affiliation, Email, and Role
+    - Checks if:
+        - The email already exists in the dictionary (raises error)
+        - The email is valid (raises an error if invalid)
+        - The role is valid using rls.is_valid (raises an error if invalid)
+    - Returns True if all checks pass
+    """
+    if email in people_dict:
+        raise ValueError(f'Adding duplicate {email=}')
+    if not is_valid_email(email):
+        raise ValueError(f'Invalid email: {email}')
+    if not rls.is_valid(role):
+        raise ValueError(f'Invalid role: {role}')
+    return True
 
 
 def main():
