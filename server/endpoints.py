@@ -12,13 +12,14 @@ from flask_cors import CORS  # type: ignore
 
 # import routes and responses
 from server.routes import (ENDPOINT_ROUTE, HELLO_ROUTE, JOURNAL_ROUTE,
-                           PEOPLE_ROUTE, TITLE_ROUTE)
+                           PEOPLE_ROUTE, TEXT_ROUTE, TITLE_ROUTE)
 from server.responses import (DATE, DATE_RESP, EDITOR, EDITOR_RESP,
                               ENDPOINT_RESP, HELLO_RESP, JOURNAL_NAME,
                               JOURNAL_RESP, TITLE, TITLE_RESP)
 
 # import data classes
 import data.people as ppl
+import data.text as txt
 
 app = Flask(__name__)
 CORS(app)
@@ -117,3 +118,15 @@ class PersonDelete(Resource):
         """
         ret = ppl.delete_person(_id)
         return {'Message': ret}
+
+
+@api.route(TEXT_ROUTE)
+class Text(Resource):
+    """
+    The purpose of this is to class is to return all people
+    """
+    def get(self):
+        """
+        Retrieve all people
+        """
+        return txt.read()

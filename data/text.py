@@ -47,8 +47,7 @@ def read():
     """
     Our contract:
         - No arguments.
-        - Returns a dictionary of users keyed on user email.
-        - Each user email must be the key for another dictionary.
+        - Returns a dictionary of texts keyed on page keys
     """
     text = text_dict
     return text

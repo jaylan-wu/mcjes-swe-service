@@ -10,6 +10,7 @@ from http.client import (
 from unittest.mock import patch
 # import data classes
 import data.people as ppl
+import data.text as txt
 
 import pytest # type: ignore
 
@@ -66,3 +67,11 @@ def test_person():
     assert ppl.NAME in person
     assert 'email' in person
     assert isinstance(person['email'], str)
+
+def test_text():
+    resp = TEST_CLIENT.get(ep.TEXT_ROUTE)
+    resp_json = resp.get_json()
+    for _id, text in resp_json.items():
+        assert isinstance(_id, str)
+        assert len(_id) > 0
+        assert txt.TITLE in text
