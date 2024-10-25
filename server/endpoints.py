@@ -121,12 +121,25 @@ class PersonDelete(Resource):
 
 
 @api.route(TEXT_ROUTE)
-class Text(Resource):
+class Texts(Resource):
     """
-    The purpose of this is to class is to return all people
+    The purpose of this is to class is to return all texts
     """
     def get(self):
         """
         Retrieve all people
         """
         return txt.read()
+
+
+@api.route(f'{TEXT_ROUTE}/<_id>')
+class Text(Resource):
+    """
+    The purpose of this is to return a single text
+    """
+    def get(self, _id):
+        """
+        Obtains id(KEY) and get a text from library with read_one.
+        """
+        ret = txt.read_one(_id)
+        return {'Message': ret}

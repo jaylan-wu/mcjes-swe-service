@@ -68,10 +68,25 @@ def test_person():
     assert 'email' in person
     assert isinstance(person['email'], str)
 
-def test_text():
+def test_texts():
     resp = TEST_CLIENT.get(ep.TEXT_ROUTE)
     resp_json = resp.get_json()
     for _id, text in resp_json.items():
         assert isinstance(_id, str)
         assert len(_id) > 0
         assert txt.TITLE in text
+
+def test_text():
+    text_key = txt.TEST_KEY
+    resp = TEST_CLIENT.get(f'{ep.TEXT_ROUTE}/{text_key}')
+    resp_json = resp.get_json()
+
+    assert resp.status_code == 200
+    assert 'Message' in resp_json
+
+    text = resp_json['Message']
+
+    assert isinstance(text, dict)
+    assert txt.TITLE in text
+    assert 'title' in text
+    assert isinstance(text['title'], str)
