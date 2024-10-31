@@ -146,6 +146,15 @@ def create(name: str, affiliation: str, email: str):
     return email
 
 
+def update(name: str, affiliation: str, email: str, roles: list):
+    if email not in people_dict:
+        raise ValueError(f'Updating non-existent person: {email=}')
+    if is_valid_person(name, affiliation, email, roles=roles):
+        people_dict[email] = {NAME: name, AFFILIATION: affiliation,
+                              EMAIL: email, ROLES: roles}
+        return email
+
+
 # TODO if person has role add records to people_w_role
 def get_masthead() -> dict:
     """
