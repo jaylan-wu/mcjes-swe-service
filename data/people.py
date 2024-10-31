@@ -155,7 +155,6 @@ def update(name: str, affiliation: str, email: str, roles: list):
         return email
 
 
-# TODO if person has role add records to people_w_role
 def get_masthead() -> dict:
     """
     Contract:
