@@ -15,7 +15,7 @@ from server.routes import (ENDPOINT_ROUTE, HELLO_ROUTE, JOURNAL_ROUTE,
                            PEOPLE_ROUTE, TEXT_ROUTE, TITLE_ROUTE)
 from server.responses import (DATE, DATE_RESP, EDITOR, EDITOR_RESP,
                               ENDPOINT_RESP, HELLO_RESP, JOURNAL_NAME,
-                              JOURNAL_RESP, TITLE, TITLE_RESP)
+                              JOURNAL_RESP, MASTHEAD_RESP, TITLE, TITLE_RESP)
 
 # import data classes
 import data.people as ppl
@@ -118,6 +118,15 @@ class PersonDelete(Resource):
         """
         ret = ppl.delete_person(_id)
         return {'Message': ret}
+
+
+@api.route(f'{PEOPLE_ROUTE}/masthead')
+class Masthead(Resource):
+    """
+    Get a journal's masthead.
+    """
+    def get(self):
+        return {MASTHEAD_RESP: ppl.get_masthead()}
 
 
 @api.route(TEXT_ROUTE)
