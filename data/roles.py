@@ -33,6 +33,10 @@ def get_masthead_roles() -> dict:
     return mh_roles
 
 
+def get_role_codes() -> list:
+    return list(ROLES.keys())
+
+
 def is_valid(code: str) -> bool:
     return code in ROLES
 
