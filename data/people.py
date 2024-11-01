@@ -155,6 +155,22 @@ def update(name: str, affiliation: str, email: str, roles: list):
         return email
 
 
+MH_FIELDS = [NAME, AFFILIATION]
+
+
+def create_mh_rec(person: dict) -> dict:
+    """
+    Contract:
+    - Takes in a dictionary of person details
+    - Returns dictionary with keys from MH_FIELDS from person, empty if missing
+    - Creates a masthead record for the person
+    """
+    mh_rec = {}
+    for field in MH_FIELDS:
+        mh_rec[field] = person.get(field, '')
+    return mh_rec
+
+
 def get_masthead() -> dict:
     """
     Contract:
