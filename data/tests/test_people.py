@@ -2,6 +2,8 @@ import pytest # type: ignore
 
 import data.people as ppl
 
+import pytest
+
 # test variables
 ADD_EMAIL = "janedoe@nyu.edu"
 NO_AT = "janedoenyu.edu"
@@ -21,6 +23,22 @@ def test_is_valid_email_no_domain():
 def test_is_valid_email_no_ext():
     assert not ppl.is_valid_email(NO_EXT)
 
+
+@pytest.fixture
+def temp_person():
+    # sample person dictionary for create_mh_rec
+    return {
+        "Name": "Test User",
+        "Affiliation": "Test Affiliation",
+        "Email": "testuser@example.com"
+    }
+
+def test_create_mh_rec(temp_person):
+    person_rec = temp_person
+    mh_rec = ppl.create_mh_rec(person_rec)
+    assert isinstance(mh_rec, dict)
+    for field in ppl.MH_FIELDS:
+        assert field in mh_rec
 
 
 def test_read():
