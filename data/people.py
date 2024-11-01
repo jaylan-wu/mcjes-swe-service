@@ -132,7 +132,7 @@ def is_valid_person(name: str, affiliation: str, email: str,
     return True
 
 
-def create(name: str, affiliation: str, email: str):
+def create(name: str, affiliation: str, email: str, role: str):
     """
     Contract:
     - Takes in a Name, Affiliation, and Email
@@ -141,6 +141,10 @@ def create(name: str, affiliation: str, email: str):
     """
     if email in people_dict:
         raise ValueError(f'Adding duplicate {email=}')
+    if is_valid_person(name, affiliation, email, role=role):
+        roles = []
+        if role:
+            roles.append(role)
     people_dict[email] = {NAME: name, AFFILIATION: affiliation,
                           EMAIL: email}
     return email
@@ -171,6 +175,12 @@ def get_masthead() -> dict:
             pass
         masthead[text] = people_w_role
     return masthead
+
+
+def has_role(person: dict, role: str) -> bool:
+    if role in person.get(ROLES):
+        return True
+    return False
 
 
 def main():

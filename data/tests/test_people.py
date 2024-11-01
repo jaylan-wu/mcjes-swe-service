@@ -2,12 +2,23 @@ import pytest # type: ignore
 
 import data.people as ppl
 
+from data.roles import TEST_CODE as TEST_ROLE_CODE
+
 # test variables
 ADD_EMAIL = "janedoe@nyu.edu"
 NO_AT = "janedoenyu.edu"
 NO_NAME = "@nyu.edu"
 NO_DOMAIN = "janedoe@"
 NO_EXT = "janedoe@nyu"
+
+TEMP_EMAIL = 'temp_person@temp.org'
+
+
+@pytest.fixture(scope='function')
+def temp_person():
+    _id = ppl.create('Joe Smith', 'NYU', TEMP_EMAIL, TEST_ROLE_CODE)
+    yield _id
+    ppl.delete(_id)
 
 def test_is_valid_email_no_at():
     assert not ppl.is_valid_email(NO_AT)
@@ -21,8 +32,6 @@ def test_is_valid_email_no_domain():
 def test_is_valid_email_no_ext():
     assert not ppl.is_valid_email(NO_EXT)
 
-
-
 def test_read():
     people = ppl.read()
     assert isinstance(people, dict)
@@ -30,7 +39,7 @@ def test_read():
     # check for string IDs:
     for _id, person in people.items():
         assert isinstance(_id, str)
-        assert ppl.NAME in person     
+        assert ppl.NAME in person
 
 
 def test_read_one():
@@ -42,7 +51,7 @@ def test_read_one():
     valid_id = ppl.SR_EMAIL  # get the first key from the dictionary
     person = ppl.read_one(valid_id)
     assert person is not None
-    assert ppl.NAME in person 
+    assert ppl.NAME in person
 
 
 def test_delete():
@@ -57,7 +66,7 @@ def test_delete():
 def test_create():
     people = ppl.read()
     assert ADD_EMAIL not in people
-    ppl.create('Joe Smith', 'NYU', ADD_EMAIL)
+    ppl.create('Joe Smith', 'NYU', ADD_EMAIL, TEST_ROLE_CODE)
     people = ppl.read()
     assert ADD_EMAIL in people
 
@@ -65,4 +74,4 @@ def test_create():
 def test_create_dupe():
     with pytest.raises(ValueError):
         ppl.create('Do not care about name',
-                   'Or affiliation', ppl.JW_EMAIL)
+                   'Or affiliation', ppl.JW_EMAIL,  TEST_ROLE_CODE)
