@@ -2,13 +2,14 @@
 This is the file containing all of the endpoints for our flask app.
 The endpoint called `endpoints` will return all available endpoints.
 """
-# from http import HTTPStatus
+from http import HTTPStatus
 
 from flask import Flask  # type: ignore -> , request
-from flask_restx import Resource, Api   # type: ignore -> Namespace, fields
+from flask_restx import Resource, Api, fields   # type: ignore -> Namespace
 from flask_cors import CORS  # type: ignore
+from flask import request
 
-# import werkzeug.exceptions as wz
+import werkzeug.exceptions as wz
 
 # import routes and responses
 from server.routes import (ENDPOINT_ROUTE, HELLO_ROUTE, JOURNAL_ROUTE,
@@ -118,6 +119,45 @@ class PersonDelete(Resource):
         """
         ret = ppl.delete_person(_id)
         return {'Message': ret}
+
+
+MESSAGE = 'Message'
+RETURN = 'return'
+
+
+PEOPLE_CREATE_FLDS = api.model('AddNewPeopleEntry', {
+    ppl.NAME: fields.String,
+    ppl.EMAIL: fields.String,
+    ppl.AFFILIATION: fields.String,
+    ppl.ROLES: fields.String,
+})
+
+
+@api.route(f'{PEOPLE_ROUTE}/create')
+class PeopleCreate(Resource):
+    """
+    Add a person to the journal db.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.expect(PEOPLE_CREATE_FLDS)
+    def put(self):
+        """
+        Add a person.
+        """
+        try:
+            name = request.json.get(ppl.NAME)
+            affiliation = request.json.get(ppl.AFFILIATION)
+            email = request.json.get(ppl.EMAIL)
+            role = request.json.get(ppl.ROLES)
+            ret = ppl.create(name, affiliation, email, role)
+        except Exception as err:
+            raise wz.NotAcceptable(f'Could not add person: '
+                                   f'{err=}')
+        return {
+            MESSAGE: 'Person added!',
+            RETURN: ret,
+        }
 
 
 @api.route(f'{PEOPLE_ROUTE}/masthead')
