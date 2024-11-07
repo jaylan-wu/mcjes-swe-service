@@ -1,4 +1,4 @@
-
+from copy import deepcopy
 
 AUTHOR_CODE = 'AU'
 TEST_CODE = 'AU'
@@ -19,7 +19,7 @@ MH_ROLES = [CE_CODE, ED_CODE, ME_CODE]
 
 
 def get_roles() -> dict:
-    return ROLES
+    return deepcopy(ROLES)
 
 
 def get_masthead_roles() -> dict:

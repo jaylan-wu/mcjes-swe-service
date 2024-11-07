@@ -11,7 +11,6 @@ ROLES = 'roles'
 AFFILIATION = 'affiliation'
 EMAIL = 'email'
 
-# testing variables (TODO add more emails)
 CW_EMAIL = 'caw9180@nyu.edu'
 ED_EMAIL = 'ed233@nyu.edu'
 JW_EMAIL = 'jw6639@nyu.edu'
@@ -70,18 +69,19 @@ def is_valid_email(email: str) -> bool:
     return re.match(pattern, email) is not None
 
 
-def read():
+def read() -> dict:
     """
     Contract:
     - No arguments
     - Returns a dictionary of users keyed on user email
     - Each user email must be the key for dictionary entry
     """
+    print('read() has been called')
     people = people_dict
     return people
 
 
-def read_one(_id):
+def read_one(email: str) -> dict:
     """
     Contract:
     - Takes in id (unique email)
@@ -89,11 +89,7 @@ def read_one(_id):
     - Returns person from dictionary if there
     - Returns None if no one is there
     """
-    people = read()
-    if _id in people:
-        return people[_id]
-    else:
-        return None
+    return people_dict.get(email)
 
 
 def delete(_id):
@@ -204,6 +200,7 @@ def create_mh_rec(person: dict) -> dict:
 
 def main():
     print(read())
+    print(get_masthead())
 
 
 if __name__ == '__main__':

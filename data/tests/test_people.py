@@ -55,12 +55,17 @@ def test_read_one():
 
 
 def test_delete():
+    # Test case 1: Deleting an existing entry
+    result = ppl.delete(ppl.DEL_EMAIL)
+    assert result == ppl.DEL_EMAIL, f"Expected {ppl.DEL_EMAIL} to be returned, but got {result}"
+
+    # Ensure the entry has been deleted
     people = ppl.read()
-    old_len = len(people)
-    ppl.delete(ppl.DEL_EMAIL)
-    people = ppl.read()
-    assert len(people) < old_len
-    assert ppl.DEL_EMAIL not in people
+    assert ppl.DEL_EMAIL not in people, "The entry should have been deleted but was found in the dictionary."
+
+    # Test case 2: Attempting to delete a non-existent entry
+    result = ppl.delete(TEMP_EMAIL)
+    assert result is None, f"Expected None to be returned for non-existent ID, but got {result}"
 
 
 def test_create():
