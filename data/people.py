@@ -159,6 +159,12 @@ def update(name: str, affiliation: str, email: str, roles: list):
         return email
 
 
+def has_role(person: dict, role: str) -> bool:
+    if role in person.get(ROLES, []):
+        return True
+    return False
+
+
 def get_masthead() -> dict:
     """
     Contract:
@@ -169,18 +175,17 @@ def get_masthead() -> dict:
     """
     masthead = {}
     mh_roles = rls.get_masthead_roles()
-    for mh_role, text in mh_roles.items():
-        people_w_role = {}
-        for person in read():
-            pass
-        masthead[text] = people_w_role
+
+    for mh_role, role_name in mh_roles.items():
+        people_with_role = {}
+        for email, person in people_dict.items():
+            if has_role(person, mh_role):
+                person_name = person.get(NAME, email)
+                people_with_role[person_name] = person
+
+        masthead[role_name] = people_with_role
+
     return masthead
-
-
-def has_role(person: dict, role: str) -> bool:
-    if role in person.get(ROLES):
-        return True
-    return False
 
 
 def main():
