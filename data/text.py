@@ -32,15 +32,24 @@ def create(key: str, title: str, text: str):
         print(f'Key {key} already exists. Use update() to modify it.')
 
 
-def delete(key: str, title: str, text: str):
+def delete(key: str, title: str):
     if key in text_dict:
         del text_dict[key]
     else:
         print(f'Key {key} does not exist. Use create() to create it.')
 
 
-def update():
-    pass
+def update(key: str, title: str, text: str):
+    """
+    Updates an existing entry in the text_dict with a new title and text.
+    If the key does not exist, it informs the user.
+    """
+    if key in text_dict:
+        text_dict[key][TITLE] = title
+        text_dict[key][TEXT] = text
+        print(f'Key {key} has been updated.')
+    else:
+        print(f'Key {key} does not exist. Use create() to add it first.')
 
 
 def read():
