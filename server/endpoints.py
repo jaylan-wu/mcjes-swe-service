@@ -197,3 +197,18 @@ class Text(Resource):
         """
         ret = txt.read_one(_id)
         return {'Message': ret}
+
+
+@api.route('/people/<string:email>/addRole/<string:role>')
+class AddRole(Resource):
+    def put(self, email, role):
+        try:
+            person = ppl.get_person(email)
+        except ValueError:
+            mssg = f"{person} not found, please create the person first"
+            return {"message": mssg}, 404
+        try:
+            ppl.add_role(email, role)
+        except KeyError as err:
+            return {"message": err}, 404
+        return {"message": f"Role '{role}' added to {email}"}
