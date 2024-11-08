@@ -26,6 +26,9 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
+# Define the PEOPLE_EP constant for consistency
+PEOPLE_EP = PEOPLE_ROUTE
+
 
 @api.route(ENDPOINT_ROUTE)
 class Endpoints(Resource):
