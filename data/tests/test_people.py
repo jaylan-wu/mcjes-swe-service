@@ -80,3 +80,4 @@ def test_create_dupe():
     with pytest.raises(ValueError):
         ppl.create('Do not care about name',
                    'Or affiliation', ppl.JW_EMAIL,  TEST_ROLE_CODE)
+
