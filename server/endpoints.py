@@ -212,3 +212,18 @@ class AddRole(Resource):
         except KeyError as err:
             return {"message": err}, 404
         return {"message": f"Role '{role}' added to {email}"}
+
+
+@api.route('/people/<string:email>/removeRole/<string:role>')
+class RemoveRole(Resource):
+    def put(self, email, role):
+        try:
+            person = ppl.get_person(email)
+        except ValueError:
+            mssg = f"{person} not found"
+            return {"message": mssg}, 404
+        try:
+            ppl.remove_role(email, role)
+        except KeyError:
+            return {"message": f"{role} doesn't exist"}, 404
+        return {"message": f"Role '{role}' removed from {email}"}
