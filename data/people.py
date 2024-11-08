@@ -51,6 +51,7 @@ people_dict = {
 }
 
 CHAR_OR_DIGIT = '[A-Za-z0-9]'
+VALID_CHARS = '[A-Za-z0-9_.]'
 
 '''
 def is_valid_email(email: str) -> bool:
@@ -171,16 +172,14 @@ def get_masthead() -> dict:
     """
     masthead = {}
     mh_roles = rls.get_masthead_roles()
-
-    for mh_role, role_name in mh_roles.items():
-        people_with_role = {}
-        for email, person in people_dict.items():
+    for mh_role, text in mh_roles.items():
+        people_w_role = []
+        people = read()
+        for _id, person in people.items():
             if has_role(person, mh_role):
-                person_name = person.get(NAME, email)
-                people_with_role[person_name] = person
-
-        masthead[role_name] = people_with_role
-
+                rec = create_mh_rec(person)
+                people_w_role.append(rec)
+        masthead[text] = people_w_role
     return masthead
 
 
