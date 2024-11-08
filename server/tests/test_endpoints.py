@@ -91,7 +91,7 @@ def test_text():
     assert 'title' in text
     assert isinstance(text['title'], str)
 
-@patch('data.people.read', autospec=True, return_value={'id': {ppl.NAME: 'Joe Schmoe'}})
+
 def test_read(mock_read):
     resp = TEST_CLIENT.get(ep.PEOPLE_EP)
     assert resp.status_code == OK
@@ -100,3 +100,13 @@ def test_read(mock_read):
         assert isinstance(_id, str)
         assert len(_id) > 0
         assert ppl.NAME in person
+
+
+def test_read_one(mock_read):
+    resp = TEST_CLIENT.get(f'{ep.PEOPLE_EP}/mock_id')
+    assert resp.status_code == OK
+
+
+def test_read_one_not_found(mock_read):
+    resp = TEST_CLIENT.get(f'{ep.PEOPLE_EP}/mock_id')
+    assert resp.status_code == NOT_FOUND

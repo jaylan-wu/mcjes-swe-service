@@ -108,7 +108,9 @@ class Person(Resource):
         Obtains id(email) and gets person from library with read_one.
         """
         ret = ppl.read_one(_id)
-        return {'Message': ret}
+        if ret is None:
+            return {"Message": "Person not found"}, HTTPStatus.NOT_FOUND
+        return {"Message": ret}, HTTPStatus.OK
 
 
 @api.route(f'{PEOPLE_ROUTE}/delete/<_id>')
