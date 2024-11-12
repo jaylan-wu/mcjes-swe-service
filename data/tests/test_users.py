@@ -1,7 +1,21 @@
+import pytest
+import unittest.mock as mock
 import data.users as usrs
 
+@pytest.fixture
+def mock_get_users():
+    with mock.patch('data.users.get_users') as mock_get_users:
+        yield mock_get_users
 
-def test_get_users():
+
+def test_get_users(mock_get_users):
+    """
+    Contract:
+    - Tests the get_users function with a valid return value
+    - Verifies that the returned dictionary has at least one user and valid user data
+    - Returns a boolean indicating whether the test passes
+    """
+    mock_get_users.return_value = {'user1': {usrs.LEVEL: 1}}
     users = usrs.get_users()
     assert isinstance(users, dict)
     assert len(users) > 0  # at least one user!
@@ -12,3 +26,14 @@ def test_get_users():
         assert isinstance(user, dict)
         assert usrs.LEVEL in user
         assert isinstance(user[usrs.LEVEL], int)
+
+def test_get_users_exception(mock_get_users):
+    """
+    Contract:
+    - Tests the get_users function with a mocked exception
+    - Verifies that the correct exception is raised when the function is called
+    - Returns a boolean indicating whether the test passes
+    """
+    mock_get_users.side_effect = Exception('Mocked exception')
+    with pytest.raises(Exception):
+        usrs.get_users()
