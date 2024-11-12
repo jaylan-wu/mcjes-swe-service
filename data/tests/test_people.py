@@ -80,4 +80,22 @@ def test_create_dupe():
     with pytest.raises(ValueError):
         ppl.create('Do not care about name',
                    'Or affiliation', ppl.JW_EMAIL,  TEST_ROLE_CODE)
+        
 
+VALID_ROLES = ['ED', 'AU']
+
+
+@pytest.mark.skip('Skipping because not done.')
+def test_update(temp_person):
+    ppl.update('Buffalo Bill', 'UBuffalo', temp_person, VALID_ROLES)
+
+
+@pytest.fixture
+def invalid_emails():
+    return ['bademail', 'no_at', 'no_name', 'no_domain', 'no_ext']
+
+def test_create_bad_email(invalid_emails):
+    for email in invalid_emails:
+        with pytest.raises(ValueError):
+            ppl.create('Do not care about name',
+                       'Or affiliation', email, TEST_ROLE_CODE)
