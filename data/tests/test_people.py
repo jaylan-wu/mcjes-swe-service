@@ -11,7 +11,7 @@ NO_NAME = "@nyu.edu"
 NO_DOMAIN = "janedoe@"
 NO_EXT = "janedoe@nyu"
 
-TEMP_EMAIL = 'temp_person@temp.org'
+TEMP_EMAIL = 'temp_person@example.org'
 
 
 @pytest.fixture(scope='function')
@@ -19,39 +19,23 @@ def temp_person():
     _id = ppl.create('Joe Smith', 'NYU', TEMP_EMAIL, TEST_ROLE_CODE)
     yield _id
     ppl.delete(_id)
+    
 
-def test_is_valid_email_no_at():
-    assert not ppl.is_valid_email(NO_AT)
-
-def test_is_valid_email_no_name():
-    assert not ppl.is_valid_email(NO_NAME)
-
-def test_is_valid_email_no_domain():
-    assert not ppl.is_valid_email(NO_DOMAIN)
-
-def test_is_valid_email_no_ext():
-    assert not ppl.is_valid_email(NO_EXT)
-
-def test_read():
+def test_read(temp_person):
     people = ppl.read()
     assert isinstance(people, dict)
     assert len(people) > 0
-    # check for string IDs:
     for _id, person in people.items():
         assert isinstance(_id, str)
         assert ppl.NAME in person
 
 
-def test_read_one():
-    # sample data for testing
-    people = ppl.read()
-    assert isinstance(people, dict)
-    assert len(people) > 0
-    # test with a valid _id that exists in the people dictionary
-    valid_id = ppl.SR_EMAIL  # get the first key from the dictionary
-    person = ppl.read_one(valid_id)
-    assert person is not None
+def test_read_one(temp_person):
+    person = ppl.read_one(temp_person)
+    assert isinstance(person, dict)
     assert ppl.NAME in person
+    assert 'email' in person
+    assert isinstance(person['email'], str)
 
 
 def test_delete():
@@ -99,3 +83,14 @@ def test_create_bad_email(invalid_emails):
         with pytest.raises(ValueError):
             ppl.create('Do not care about name',
                        'Or affiliation', email, TEST_ROLE_CODE)
+            
+
+@pytest.fixture
+def valid_emails():
+    return [ADD_EMAIL]
+
+def test_create(valid_emails):
+    for email in valid_emails:
+        ppl.create('Joe Smith', 'NYU', email, TEST_ROLE_CODE)
+        people = ppl.read()
+        assert email in people
