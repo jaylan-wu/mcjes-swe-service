@@ -7,6 +7,8 @@ CLOUD = "1"
 
 GAME_DB = 'gamesDB'
 
+SE_DB = 'seDB'
+
 client = None
 
 MONGO_ID = '_id'
@@ -66,6 +68,18 @@ def del_one(collection, filt, db=GAME_DB):
 
 def update_doc(collection, filters, update_dict, db=GAME_DB):
     return client[db][collection].update_one(filters, {'$set': update_dict})
+
+
+def read(collection, db=SE_DB, no_id=True) -> list:
+    """
+    Returns a list from the DB.
+    """
+    ret = []
+    for doc in client[db][collection].find():
+        if no_id:
+            del doc[MONGO_ID]
+        ret.append(doc)
+    return ret
 
 
 def fetch_all(collection, db=GAME_DB):
