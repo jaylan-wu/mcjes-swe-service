@@ -39,6 +39,14 @@ def connect_db():
             client = pm.MongoClient()
 
 
+def create(collection, doc, db=SE_DB):
+    """
+    Insert a single doc into collection.
+    """
+    print(f'{db=}')
+    return client[db][collection].insert_one(doc)
+
+
 def insert_one(collection, doc, db=GAME_DB):
     """
     Insert a single doc into collection.
