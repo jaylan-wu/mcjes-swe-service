@@ -9,3 +9,7 @@ def test_get_fld_names():
     assert isinstance(fld_names, list)
     assert 'title' in fld_names  # Check if 'title' is in the field names
 
+def test_get_disp_name():
+    # Test with a valid field name
+    disp_name = mflds.get_disp_name('title')
+    assert disp_name == 'Title', f"Expected 'Title', but got {disp_name}"
