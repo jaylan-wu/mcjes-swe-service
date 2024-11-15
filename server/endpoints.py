@@ -227,3 +227,42 @@ class RemoveRole(Resource):
         except KeyError:
             return {"message": f"{role} doesn't exist"}, 404
         return {"message": f"Role '{role}' removed from {email}"}
+
+
+TITLE_UPDATE_FIELDS = api.model('UpdateJournalTitle', {
+    'title': fields.String(description="The new title of the journal"),
+    'editor': fields.String(description="The new editor of the journal"),
+    'date': fields.String(description="The new publication date of journal")
+})
+
+
+@api.route(f'{TITLE_ROUTE}/update')
+class UpdateJournalTitle(Resource):
+    """
+    Update the journal title, editor, and publication date.
+    """
+    @api.expect(TITLE_UPDATE_FIELDS)
+    @api.response(HTTPStatus.OK, 'Title updated successfully')
+    @api.response(HTTPStatus.BAD_REQUEST, 'Invalid input')
+    def post(self):
+        """
+        Update journal title information.
+        """
+        try:
+            # Declare globals at the beginning of the function
+            global TITLE, EDITOR, DATE
+            new_title = request.json.get('title', TITLE)
+            new_editor = request.json.get('editor', EDITOR)
+            new_date = request.json.get('date', DATE)
+            # Update global variables or database records
+            TITLE = new_title
+            EDITOR = new_editor
+            DATE = new_date
+            return {
+                "message": "Journal title updated successfully",
+                TITLE_RESP: TITLE,
+                EDITOR_RESP: EDITOR,
+                DATE_RESP: DATE
+            }, HTTPStatus.OK
+        except Exception as err:
+            return {"message": f"Update Failed: {err}"}, HTTPStatus.BAD_REQUEST
