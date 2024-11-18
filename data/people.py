@@ -3,7 +3,10 @@ In this module, we interface with the People Datatype
 """
 import re
 
+import data.db_connect as dbc
 import data.roles as rls
+
+PEOPLE_COLLECTION = 'people'
 
 # data fields
 NAME = 'name'
@@ -50,6 +53,9 @@ people_dict = {
     },
 }
 
+client = dbc.connect_db()
+print(f'{client=}')
+
 CHAR_OR_DIGIT = '[A-Za-z0-9]'
 VALID_CHARS = '[A-Za-z0-9_.]'
 
@@ -78,7 +84,9 @@ def read() -> dict:
     - Each user email must be the key for dictionary entry
     """
     print('read() has been called')
-    people = people_dict
+    # people = people_dict
+    people = dbc.read_dict(PEOPLE_COLLECTION, EMAIL)
+    print(f'{people=}')
     return people
 
 
@@ -142,9 +150,11 @@ def create(name: str, affiliation: str, email: str, role: str):
         roles = []
         if role:
             roles.append(role)
-    people_dict[email] = {NAME: name, AFFILIATION: affiliation,
-                          EMAIL: email}
-    return email
+        person = {NAME: name, AFFILIATION: affiliation,
+                  EMAIL: email, ROLES: roles}
+        print(person)
+        dbc.create(PEOPLE_COLLECTION, person)
+        return email
 
 
 def update(name: str, affiliation: str, email: str, roles: list):
@@ -200,6 +210,7 @@ def create_mh_rec(person: dict) -> dict:
 def main():
     print(read())
     print(get_masthead())
+    print(f'{client=}')
 
 
 if __name__ == '__main__':
