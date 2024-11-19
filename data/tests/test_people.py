@@ -16,20 +16,24 @@ NO_EXT = "janedoe@nyu"
 TEMP_EMAIL = 'temp_person@example.org'
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture
 def temp_person():
-    _id = ppl.create('Joe Smith', 'NYU', TEMP_EMAIL, TEST_ROLE_CODE)
-    yield _id
-    ppl.delete(_id)
-    
+    person = {'email': 'test@example.com', 'name': 'Test User', 'level': 1}
+    dbc.insert_one(PEOPLE_COLLECTION, person)
+    yield person
+    dbc.delete_one(PEOPLE_COLLECTION, EMAIL, person['email'])
 
 def test_read(temp_person):
-    people = ppl.read()
+    # Test that the read function correctly retrieves all users from the database
+    # Verifies that the function returns a dictionary of users keyed on user email
+    # and that the dictionary has the correct structure
+    people = dbc.read()
     assert isinstance(people, dict)
     assert len(people) > 0
-    for _id, person in people.items():
-        assert isinstance(_id, str)
-        assert ppl.NAME in person
+    for email, person in people.items():
+        assert isinstance(email, str)
+        assert EMAIL in person
+        assert isinstance(person[EMAIL], str)
 
 
 #@pytest.mark.skip('Skipping because not done.')
