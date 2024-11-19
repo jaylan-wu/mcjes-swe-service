@@ -1,8 +1,10 @@
 import pytest # type: ignore
 
 import data.people as ppl
+import data.db_connect as dbc
 
 from data.roles import TEST_CODE as TEST_ROLE_CODE
+from data.people import PEOPLE_COLLECTION, EMAIL
 
 # test variables
 ADD_EMAIL = "janedoe@nyu.edu"
@@ -30,13 +32,20 @@ def test_read(temp_person):
         assert ppl.NAME in person
 
 
-def test_read_one(temp_person):
-    person = ppl.read_one(temp_person)
+#@pytest.mark.skip('Skipping because not done.')
+def test_read_one():
+    # Test that the read_one function correctly retrieves a user from the database
+    # Verifies that the function returns a dictionary representing the user
+    # and that the dictionary has the correct structure
+    email = 'test@example.com'
+    expected_person = {'email': email, 'name': 'Test User', 'level': 1}
+    dbc.insert_dict(PEOPLE_COLLECTION, expected_person)
+    person = ppl.read_one(email)
     assert isinstance(person, dict)
-    assert ppl.NAME in person
-    assert 'email' in person
-    assert isinstance(person['email'], str)
-
+    assert person['email'] == email
+    assert person['name'] == expected_person['name']
+    assert person['level'] == expected_person['level']
+    dbc.delete_dict(PEOPLE_COLLECTION, EMAIL, email)
 
 def test_delete():
     # Test case 1: Deleting an existing entry

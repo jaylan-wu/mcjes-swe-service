@@ -98,7 +98,9 @@ def read_one(email: str) -> dict:
     - Returns person from dictionary if there
     - Returns None if no one is there
     """
-    return people_dict.get(email)
+    person = dbc.read_one(PEOPLE_COLLECTION, EMAIL, email)
+    print(f'{person=}')
+    return person
 
 
 def delete(_id):
