@@ -43,13 +43,14 @@ def test_read_one():
     # and that the dictionary has the correct structure
     email = 'test@example.com'
     expected_person = {'email': email, 'name': 'Test User', 'level': 1}
-    dbc.insert_dict(PEOPLE_COLLECTION, expected_person)
-    person = ppl.read_one(email)
+    filter = {'email': email}
+    dbc.create(PEOPLE_COLLECTION, expected_person)
+    person = ppl.read_one(filter)
     assert isinstance(person, dict)
     assert person['email'] == email
     assert person['name'] == expected_person['name']
     assert person['level'] == expected_person['level']
-    dbc.delete_dict(PEOPLE_COLLECTION, EMAIL, email)
+    dbc.del_one(PEOPLE_COLLECTION, filter)
 
 def test_delete():
     # Test case 1: Deleting an existing entry

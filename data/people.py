@@ -98,7 +98,7 @@ def read_one(email: str) -> dict:
     - Returns person from dictionary if there
     - Returns None if no one is there
     """
-    person = dbc.read_one(PEOPLE_COLLECTION, EMAIL, email)
+    person = dbc.fetch_one(PEOPLE_COLLECTION, email)
     print(f'{person=}')
     return person
 
