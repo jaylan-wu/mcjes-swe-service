@@ -146,14 +146,13 @@ def create(name: str, affiliation: str, email: str, role: str):
     - Returns email if added, else it will raise an error
     - Creating/adding user email to dict
     """
-    if email in people_dict:
+    if dbc.read_one(PEOPLE_COLLECTION, EMAIL, email):
         raise ValueError(f'Adding duplicate {email=}')
-    if is_valid_person(name, affiliation, email, role=role):
+    if is_valid_person(name, affiliation, email, role):
         roles = []
         if role:
             roles.append(role)
-        person = {NAME: name, AFFILIATION: affiliation,
-                  EMAIL: email, ROLES: roles}
+        person = {NAME: name, AFFILIATION: affiliation, EMAIL: email, ROLES: roles}
         print(person)
         dbc.create(PEOPLE_COLLECTION, person)
         return email
