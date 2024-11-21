@@ -113,3 +113,7 @@ def test_create(valid_emails):
         ppl.create('Joe Smith', 'NYU', email, TEST_ROLE_CODE)
         people = ppl.read()
         assert email in people
+
+def test_get_masthead():
+    mh = ppl.get_masthead()
+    assert isinstance(mh, dict)
