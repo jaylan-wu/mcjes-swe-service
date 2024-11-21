@@ -78,7 +78,7 @@ def test_create_dupe():
     with pytest.raises(ValueError):
         ppl.create('Do not care about name',
                    'Or affiliation', ppl.JW_EMAIL,  TEST_ROLE_CODE)
-        
+
 
 VALID_ROLES = ['ED', 'AU']
 
@@ -86,6 +86,11 @@ VALID_ROLES = ['ED', 'AU']
 @pytest.mark.skip('Skipping because not done.')
 def test_update(temp_person):
     ppl.update('Buffalo Bill', 'UBuffalo', temp_person, VALID_ROLES)
+
+def test_update_not_there(temp_person):
+    with pytest.raises(ValueError):
+        ppl.update('Will Fail', 'University of the Void',
+                   'Non-existent email', VALID_ROLES)
 
 
 @pytest.fixture
@@ -97,7 +102,7 @@ def test_create_bad_email(invalid_emails):
         with pytest.raises(ValueError):
             ppl.create('Do not care about name',
                        'Or affiliation', email, TEST_ROLE_CODE)
-            
+
 
 @pytest.fixture
 def valid_emails():
