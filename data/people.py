@@ -130,7 +130,7 @@ def is_valid_person(name: str, affiliation: str, email: str,
         - The role is valid using rls.is_valid (raises an error if invalid)
     - Returns True if all checks pass
     """
-    if email in people_dict:
+    if dbc.read_one(PEOPLE_COLLECTION, EMAIL, email):
         raise ValueError(f'Adding duplicate {email=}')
     if not is_valid_email(email):
         raise ValueError(f'Invalid email: {email}')
