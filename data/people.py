@@ -130,7 +130,8 @@ def is_valid_person(name: str, affiliation: str, email: str,
         - The role is valid using rls.is_valid (raises an error if invalid)
     - Returns True if all checks pass
     """
-    if dbc.read_one(PEOPLE_COLLECTION, EMAIL, email):
+    filter = {EMAIL: email}
+    if dbc.fetch_one(PEOPLE_COLLECTION, filter):
         raise ValueError(f'Adding duplicate {email=}')
     if not is_valid_email(email):
         raise ValueError(f'Invalid email: {email}')
@@ -146,7 +147,8 @@ def create(name: str, affiliation: str, email: str, role: str):
     - Returns email if added, else it will raise an error
     - Creating/adding user email to dict
     """
-    if dbc.read_one(PEOPLE_COLLECTION, EMAIL, email):
+    filter = {EMAIL: email}
+    if dbc.fetch_one(PEOPLE_COLLECTION, filter):
         raise ValueError(f'Adding duplicate {email=}')
     if is_valid_person(name, affiliation, email, role):
         roles = []
