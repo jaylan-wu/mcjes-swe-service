@@ -212,12 +212,9 @@ def get_masthead() -> dict:
     masthead = {}
     mh_roles = rls.get_masthead_roles()
     for mh_role, text in mh_roles.items():
-        people_w_role = []
-        people = read()
-        for _id, person in people.items():
-            if has_role(person, mh_role):
-                rec = create_mh_rec(person)
-                people_w_role.append(rec)
+        # Query database for people with the given role
+        people = dbc.read_dict(PEOPLE_COLLECTION, ROLES, mh_role)
+        people_w_role = [create_mh_rec(person) for person in people]
         masthead[text] = people_w_role
     return masthead
 
