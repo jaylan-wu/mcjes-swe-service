@@ -125,9 +125,9 @@ def is_valid_person(name: str, affiliation: str, email: str,
     Contract:
     - Takes in a Name, Affiliation, Email, and Role
     - Checks if:
-        - The email already exists in the dictionary (raises error)
-        - The email is valid (raises an error if invalid)
-        - The role is valid using rls.is_valid (raises an error if invalid)
+        - Email already exists in the dictionary (raises error)
+        - Email is valid (raises an error if invalid)
+        - The role is valid using rls.is_valid
     - Returns True if all checks pass
     """
     filter = {EMAIL: email}
@@ -144,7 +144,7 @@ def create(name: str, affiliation: str, email: str, role: str):
     """
     Contract:
     - Takes in a Name, Affiliation, and Email
-    - Returns email if added, else it will raise an error
+    - Returns email if added, else raise an error
     - Creating/adding user email to dict
     """
     filter = {EMAIL: email}
@@ -166,18 +166,26 @@ def create(name: str, affiliation: str, email: str, role: str):
 
 
 def update(name: str, affiliation: str, email: str, roles: list):
-    if email not in people_dict:
+    """
+     Contract:
+    - Takes in a Name, Affiliation, Email, and Roles
+    - Updates person's details in database if exists, else error
+    - Returns modified count if updated
+    """
         raise ValueError(f'Updating non-existent person: {email=}')
-    if is_valid_person(name, affiliation, email, roles=roles):
-        people_dict[email] = {NAME: name, AFFILIATION: affiliation,
-                              EMAIL: email, ROLES: roles}
-        return email
-
-
-def has_role(person: dict, role: str) -> bool:
-    if role in person.get(ROLES, []):
-        return True
-    return False
+    updated_person = {
+        NAME: name,
+        AFFILIATION: affiliation,
+        EMAIL: email,
+        ROLES: roles
+    }
+    result = dbc.update_one(
+        PEOPLE_COLLECTION,
+        EMAIL,
+        email,
+        updated_person
+    )
+    return result.modified_count
 
 
 def get_masthead() -> dict:
