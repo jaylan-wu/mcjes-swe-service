@@ -172,6 +172,7 @@ def update(name: str, affiliation: str, email: str, roles: list):
     - Updates person's details in database if exists, else error
     - Returns modified count if updated
     """
+    if not dbc.read_one(PEOPLE_COLLECTION, EMAIL, email):
         raise ValueError(f'Updating non-existent person: {email=}')
     updated_person = {
         NAME: name,
@@ -186,6 +187,18 @@ def update(name: str, affiliation: str, email: str, roles: list):
         updated_person
     )
     return result.modified_count
+
+
+def has_role(email: str, role: str) -> bool:
+    """
+    Contract:
+    - Takes in an Email and a Role
+    - Returns True if the person has the role, False otherwise
+    """
+    person = dbc.read_one(PEOPLE_COLLECTION, EMAIL, email)
+    if not person:
+        return False
+    return role in person.get(ROLES, [])
 
 
 def get_masthead() -> dict:
