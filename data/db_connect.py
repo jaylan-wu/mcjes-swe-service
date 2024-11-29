@@ -66,14 +66,16 @@ def read_one(collection, filt, db=SE_DB):
         return doc
 
 
-def del_one(collection, filt, db=SE_DB):
+def delete(collection: str, filt: dict, db=SE_DB):
     """
     Find with a filter and return on the first doc found.
     """
-    client[db][collection].delete_one(filt)
+    print(f'{filt=}')
+    del_result = client[db][collection].delete_one(filt)
+    return del_result.deleted_count
 
 
-def update_doc(collection, filters, update_dict, db=SE_DB):
+def update(collection, filters, update_dict, db=SE_DB):
     return client[db][collection].update_one(filters, {'$set': update_dict})
 
 
@@ -85,6 +87,8 @@ def read(collection, db=SE_DB, no_id=True) -> list:
     for doc in client[db][collection].find():
         if no_id:
             del doc[MONGO_ID]
+        else:
+            convert_mongo_id(doc)
         ret.append(doc)
     return ret
 
