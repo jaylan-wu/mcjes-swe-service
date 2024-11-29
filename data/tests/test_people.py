@@ -38,21 +38,13 @@ def test_read(temp_person):
         assert ppl.NAME in person
 
 
-#@pytest.mark.skip('Skipping because not done.')
-def test_read_one():
-    # Test that the read_one function correctly retrieves a user from the database
-    # Verifies that the function returns a dictionary representing the user
-    # and that the dictionary has the correct structure
-    email = 'test@example.com'
-    expected_person = {'email': email, 'name': 'Test User', 'level': 1}
-    filter = {'email': email}
-    dbc.create(PEOPLE_COLLECTION, expected_person)
-    person = ppl.read_one(filter)
-    assert isinstance(person, dict)
-    assert person['email'] == email
-    assert person['name'] == expected_person['name']
-    assert person['level'] == expected_person['level']
-    dbc.del_one(PEOPLE_COLLECTION, filter)
+def test_read_one(temp_person):
+    assert ppl.read_one(temp_person) is not None
+
+
+def test_read_one_not_there():
+    assert ppl.read_one('Not an existing email!') is None
+
 
 @pytest.mark.skip('Skipping because not done.')
 def test_delete():

@@ -59,11 +59,6 @@ print(f'{client=}')
 CHAR_OR_DIGIT = '[A-Za-z0-9]'
 VALID_CHARS = '[A-Za-z0-9_.]'
 
-'''
-def is_valid_email(email: str) -> bool:
-    return re.match(f"{CHAR_OR_DIGIT}.*@{CHAR_OR_DIGIT}.*", email)
-'''
-
 
 def is_valid_email(email: str) -> bool:
     """
@@ -83,8 +78,6 @@ def read() -> dict:
     - Returns a dictionary of users keyed on user email
     - Each user email must be the key for dictionary entry
     """
-    print('read() has been called')
-    # people = people_dict
     people = dbc.read_dict(PEOPLE_COLLECTION, EMAIL)
     print(f'{people=}')
     return people
@@ -93,34 +86,30 @@ def read() -> dict:
 def read_one(email: str) -> dict:
     """
     Contract:
-    - Takes in id (unique email)
-    - Searches dictionary for id
+    - Takes in an email
     - Returns person from dictionary if there
     - Returns None if no one is there
     """
-    person = dbc.fetch_one(PEOPLE_COLLECTION, email)
-    print(f'{person=}')
-    return person
+    return dbc.read_one(PEOPLE_COLLECTION, {EMAIL: email})
 
 
-def delete(_id):
+def exists(email: str) -> bool:
+    return read_one(email) is not None
+
+
+def delete(email: str):
     """
     Contract:
-    - Takes in id (unique email)
-    - Searches dictionary for id
+    - Takes in an email
     - Returns and deletes email if found
     - Returns None if email not in dict
     """
-    people = read()
-    if _id in people:
-        del people[_id]
-        return _id
-    else:
-        return None
+    print(f'{EMAIL=}, {email=}')
+    return dbc.delete(PEOPLE_COLLECTION, {EMAIL: email})
 
 
 def is_valid_person(name: str, affiliation: str, email: str,
-                    role: str) -> bool:
+                    role: str = None, roles: list = None) -> bool:
     """
     Contract:
     - Takes in a Name, Affiliation, Email, and Role
@@ -130,13 +119,15 @@ def is_valid_person(name: str, affiliation: str, email: str,
         - The role is valid using rls.is_valid
     - Returns True if all checks pass
     """
-    filter = {EMAIL: email}
-    if dbc.fetch_one(PEOPLE_COLLECTION, filter):
-        raise ValueError(f'Adding duplicate {email=}')
     if not is_valid_email(email):
         raise ValueError(f'Invalid email: {email}')
-    if not rls.is_valid(role):
-        raise ValueError(f'Invalid role: {role}')
+    if role:
+        if not rls.is_valid(role):
+            raise ValueError(f'Invalid role: {role}')
+    elif roles:
+        for role in roles:
+            if not rls.is_valid(role):
+                raise ValueError(f'Invalid role: {role}')
     return True
 
 
@@ -147,19 +138,14 @@ def create(name: str, affiliation: str, email: str, role: str):
     - Returns email if added, else raise an error
     - Creating/adding user email to dict
     """
-    filter = {EMAIL: email}
-    if dbc.fetch_one(PEOPLE_COLLECTION, filter):
+    if exists(email):
         raise ValueError(f'Adding duplicate {email=}')
-    if is_valid_person(name, affiliation, email, role):
+    if is_valid_person(name, affiliation, email, role=role):
         roles = []
         if role:
             roles.append(role)
-        person = {
-            NAME: name,
-            AFFILIATION: affiliation,
-            EMAIL: email,
-            ROLES: roles
-        }
+        person = {NAME: name, AFFILIATION: affiliation,
+                  EMAIL: email, ROLES: roles}
         print(person)
         dbc.create(PEOPLE_COLLECTION, person)
         return email
@@ -172,33 +158,29 @@ def update(name: str, affiliation: str, email: str, roles: list):
     - Updates person's details in database if exists, else error
     - Returns modified count if updated
     """
-    if not dbc.read_one(PEOPLE_COLLECTION, EMAIL, email):
+    if not exists(email):
         raise ValueError(f'Updating non-existent person: {email=}')
-    updated_person = {
-        NAME: name,
-        AFFILIATION: affiliation,
-        EMAIL: email,
-        ROLES: roles
-    }
-    result = dbc.update_one(
-        PEOPLE_COLLECTION,
-        EMAIL,
-        email,
-        updated_person
-    )
-    return result.modified_count
+    if is_valid_person(name, affiliation, email, roles=roles):
+        ret = dbc.update(PEOPLE_COLLECTION,
+                         {EMAIL: email},
+                         {NAME: name, AFFILIATION: affiliation,
+                          EMAIL: email, ROLES: roles})
+        print(f'{ret=}')
+        return email
 
 
-def has_role(email: str, role: str) -> bool:
+def has_role(person: dict, role: str) -> bool:
     """
     Contract:
-    - Takes in an Email and a Role
+    - Takes in person dictionary and a Role
     - Returns True if the person has the role, False otherwise
     """
-    person = dbc.read_one(PEOPLE_COLLECTION, EMAIL, email)
-    if not person:
-        return False
-    return role in person.get(ROLES, [])
+    if role in person.get(ROLES):
+        return True
+    return False
+
+
+MH_FIELDS = [NAME, AFFILIATION]
 
 
 def get_masthead() -> dict:
@@ -212,14 +194,14 @@ def get_masthead() -> dict:
     masthead = {}
     mh_roles = rls.get_masthead_roles()
     for mh_role, text in mh_roles.items():
-        # Query database for people with the given role
-        people = dbc.read_dict(PEOPLE_COLLECTION, ROLES, mh_role)
-        people_w_role = [create_mh_rec(person) for person in people]
+        people_w_role = []
+        people = read()
+        for _id, person in people.items():
+            if has_role(person, mh_role):
+                rec = create_mh_rec(person)
+                people_w_role.append(rec)
         masthead[text] = people_w_role
     return masthead
-
-
-MH_FIELDS = [NAME, AFFILIATION]
 
 
 def get_mh_fields(journal_code=None) -> list:
@@ -234,9 +216,7 @@ def create_mh_rec(person: dict) -> dict:
 
 
 def main():
-    print(read())
     print(get_masthead())
-    print(f'{client=}')
 
 
 if __name__ == '__main__':
