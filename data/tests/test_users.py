@@ -50,3 +50,24 @@ def test_get_users_empty(mock_get_users):
     users = usrs.get_users()
     assert isinstance(users, dict)
     assert len(users) == 0  # No users returned
+
+
+def test_get_users_invalid_data(mock_get_users):
+    """
+    Contract:
+    - Tests the get_users function with invalid user data
+    - Verifies that the function correctly identifies invalid data
+    - Returns a boolean indicating whether the test passes
+    """
+    mock_get_users.return_value = {'user1': {usrs.LEVEL: 'invalid_level'}}
+    users = usrs.get_users()
+    assert isinstance(users, dict)
+    assert len(users) > 0  # At least one user is present
+    for key in users:
+        assert isinstance(key, str)
+        assert len(key) >= usrs.MIN_USER_NAME_LEN
+        user = users[key]
+        assert isinstance(user, dict)
+        assert usrs.LEVEL in user
+        with pytest.raises(AssertionError):
+            assert isinstance(user[usrs.LEVEL], int)  # Invalid type
