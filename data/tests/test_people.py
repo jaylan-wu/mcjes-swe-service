@@ -112,15 +112,17 @@ def test_delete(temp_person):
 
 
 def test_create():
+    if ppl.exists(ADD_EMAIL):  # Clean up if email exists
+        ppl.delete(ADD_EMAIL)
     ppl.create('Joe Smith', 'NYU', ADD_EMAIL, TEST_ROLE_CODE)
     assert ppl.exists(ADD_EMAIL)
-    ppl.delete(ADD_EMAIL)
+    ppl.delete(ADD_EMAIL)  # Cleanup after test
 
 
 def test_create_duplicate(temp_person):
     with pytest.raises(ValueError):
         ppl.create('Random name',
-                   'Random affiliation', temp_person, 
+                   'Random affiliation', temp_person,
                    TEST_ROLE_CODE)
 
 

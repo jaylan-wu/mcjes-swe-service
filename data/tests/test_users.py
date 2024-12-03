@@ -37,3 +37,16 @@ def test_get_users_exception(mock_get_users):
     mock_get_users.side_effect = Exception('Mocked exception')
     with pytest.raises(Exception):
         usrs.get_users()
+
+
+def test_get_users_empty(mock_get_users):
+    """
+    Contract:
+    - Tests the get_users function when no users are returned
+    - Verifies that the returned dictionary is empty
+    - Returns a boolean indicating whether the test passes
+    """
+    mock_get_users.return_value = {}
+    users = usrs.get_users()
+    assert isinstance(users, dict)
+    assert len(users) == 0  # No users returned
