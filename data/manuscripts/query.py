@@ -65,8 +65,6 @@ FUNC = 'f'
 STATE_TABLE = {
     SUBMITTED: {
         ASSIGN_REF: {
-            # These next lines are alternatives that work the same.
-            # FUNC: sub_assign_ref,
             FUNC: lambda m: IN_REF_REV,
         },
         REJECT: {
@@ -74,15 +72,37 @@ STATE_TABLE = {
         },
     },
     IN_REF_REV: {
+        DONE: {
+            FUNC: lambda m: COPY_EDIT,
+        },
+        REJECT: {
+            FUNC: lambda m: REJECTED,
+        },
     },
     COPY_EDIT: {
         DONE: {
             FUNC: lambda m: AUTHOR_REV,
         },
+        ACCEPT: {
+            FUNC: lambda m: 'PUBLISHED',
+        },
+        REJECT: {
+            FUNC: lambda m: REJECTED,
+        },
     },
     AUTHOR_REV: {
+        DONE: {
+            FUNC: lambda m: COPY_EDIT,
+        },
+        REJECT: {
+            FUNC: lambda m: REJECTED,
+        },
     },
     REJECTED: {
+        # No further actions; terminal state.
+    },
+    'PUBLISHED': {
+        # No further actions; terminal state.
     },
 }
 
