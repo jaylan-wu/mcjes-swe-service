@@ -3,9 +3,9 @@
 
 echo "Importing from common.sh"
 
-DB=gamesDB
-USER=gcallah
-CONNECT_STR="mongodb+srv://koukoumongo1.yud9b.mongodb.net/"
+DB=swe-mcjes-prod
+USER=mv2210
+CONNECT_STR="mongodb+srv://swe-mcjes-db.mgzot.mongodb.net/"
 if [ -z $DATA_DIR ]
 then
     DATA_DIR=/Users/gcallah/Classes/demo-repo4/data
