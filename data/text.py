@@ -36,8 +36,16 @@ def create(key: str, title: str, text: str):
         print(f'Key {key} already exists. Use update() to modify it.')
 
 
-def delete(key: str, title: str):
+def delete(key: str):
     dbc.delete(TEXT_COLLECTION, {KEY: key})
+
+
+def exists(key: str) -> bool:
+    return read_one(key)
+
+
+def read_one(key: str) -> dict:
+    return dbc.read_one(TEXT_COLLECTION, {KEY: key})
 
 
 def update(key: str, title: str, text: str):
@@ -61,15 +69,6 @@ def read():
     """
     text = text_dict
     return text
-
-
-def read_one(key: str) -> dict:
-    # This should take a key and return the page dictionary
-    # for that key. Return an empty dictionary of key not found.
-    result = {}
-    if key in text_dict:
-        result = text_dict[key]
-    return result
 
 
 def main():
