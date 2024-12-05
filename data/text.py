@@ -1,3 +1,7 @@
+import data.db_connect as dbc
+
+TEXT_COLLECTION = 'text'
+
 KEY = 'key'
 TITLE = 'title'
 TEXT = 'text'
@@ -33,10 +37,7 @@ def create(key: str, title: str, text: str):
 
 
 def delete(key: str, title: str):
-    if key in text_dict:
-        del text_dict[key]
-    else:
-        print(f'Key {key} does not exist. Use create() to create it.')
+    dbc.delete(TEXT_COLLECTION, {KEY: key})
 
 
 def update(key: str, title: str, text: str):
