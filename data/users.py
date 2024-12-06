@@ -58,3 +58,36 @@ try:
     print("User created successfully:", users)
 except ValueError as e:
     print("Error:", e)
+
+
+def delete_user(users, user_name):
+    """
+    Contract:
+    - Takes in a user name.
+    - Deletes the user from the users dictionary if found.
+    - Returns the deleted user's details if found and deleted.
+    - Returns None if the user is not in the dictionary.
+    """
+    if user_name in users:
+        deleted_user = users.pop(user_name)
+        print(f"Deleted user: {user_name}")
+        return deleted_user
+    else:
+        print(f"User not found: {user_name}")
+        return None
+
+
+# Example usage
+users = get_users()
+try:
+    users = create_user(users, "Smith", 2)
+    print("User created successfully:", users)
+except ValueError as e:
+    print("Error:", e)
+
+# Deleting a user
+deleted_user = delete_user(users, "Smith")
+if deleted_user:
+    print("Deleted user details:", deleted_user)
+else:
+    print("User not found.")
