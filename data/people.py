@@ -94,7 +94,12 @@ def read_one(email: str) -> dict:
 
 
 def exists(email: str) -> bool:
-    return read_one(email) is not None
+    """
+    Contract:
+    - Takes in an email
+    - Returns True if the person exists in database, False otherwise
+    """
+    return dbc.read_one(PEOPLE_COLLECTION, {EMAIL: email}) is not None
 
 
 def delete(email: str):
