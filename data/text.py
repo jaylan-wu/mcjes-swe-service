@@ -26,14 +26,13 @@ text_dict = {
     },
 }
 
-# Functions to work on
-
 
 def create(key: str, title: str, text: str):
-    if key not in text_dict:
-        text_dict[key] = {TITLE: title, TEXT: text}
-    else:
-        print(f'Key {key} already exists. Use update() to modify it.')
+    if exists(key):
+        raise ValueError(f'Adding duplicate {key=}')
+    text = {KEY: key, TITLE: title, TEXT: text}
+    dbc.create(TEXT_COLLECTION, text)
+    return key
 
 
 def delete(key: str):

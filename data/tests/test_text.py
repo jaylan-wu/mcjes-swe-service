@@ -1,19 +1,31 @@
 import pytest
 import data.text as txt
 
+ADD_TEXT = "Test Text"
+
 @pytest.fixture(scope='function')
 def temp_text():
     text = txt.create(txt.TEST_KEY, 'Home Page', 
             'This is a journal about building API servers.')
     yield text
     try:
-        txt.delete(txt.TEST_KEY, 'Home Page')
+        txt.delete(text)
     except:
         print('Text already deleted.')
+
 
 def test_delete(temp_text):
     txt.delete(temp_text)
     assert not txt.exists(temp_text)
+
+
+def test_create():
+    if txt.exists(ADD_TEXT):
+        txt.delete(ADD_TEXT)
+    txt.create(ADD_TEXT, 'Test Page', 'This is a test page')
+    assert txt.exists(ADD_TEXT)
+    txt.delete(ADD_TEXT)
+
 
 def test_read():
     texts = txt.read()
@@ -22,10 +34,8 @@ def test_read():
         assert isinstance(key, str) 
 
 
-
-@pytest.mark.skip('Skipping because not done.')
-def test_read_one():
-    assert len(txt.read_one(txt.TEST_KEY)) > 0
+def test_read_one(temp_text):
+    assert txt.read_one(temp_text) is not None
 
 
 @pytest.mark.skip('Skipping because not done.')
