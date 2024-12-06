@@ -103,11 +103,11 @@ class Person(Resource):
     """
     The purpose of this is to return a single person.
     """
-    def get(self, _id):
+    def get(self, email):
         """
         Obtains id(email) and gets person from library with read_one.
         """
-        ret = ppl.read_one(_id)
+        ret = ppl.read_one(email)
         if ret is None:
             return {"Message": "Person not found"}, HTTPStatus.NOT_FOUND
         return {"Message": ret}, HTTPStatus.OK

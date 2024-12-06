@@ -23,38 +23,33 @@ def test_create():
     if txt.exists(ADD_TEXT):
         txt.delete(ADD_TEXT)
     txt.create(ADD_TEXT, 'Test Page', 'This is a test page')
+    with pytest.raises(ValueError, match="Adding duplicate key='Test Text'"):
+        txt.create(ADD_TEXT, 'Test Page', 'This is a test page')
     assert txt.exists(ADD_TEXT)
     txt.delete(ADD_TEXT)
 
 
-def test_read():
+def test_read(temp_text):
     texts = txt.read()
     assert isinstance(texts, dict)
-    for key in texts:
-        assert isinstance(key, str) 
+    assert len(texts) > 0
+    for key, title in texts.items():
+        assert isinstance(key, str)
+        assert txt.TITLE in title
 
 
 def test_read_one(temp_text):
     assert txt.read_one(temp_text) is not None
 
 
-@pytest.mark.skip('Skipping because not done.')
 def test_read_one_not_found():
-    assert txt.read_one('Not a page key!') == {}
+    assert txt.read_one('Not a page key!') is None
 
 
-@pytest.mark.skip('Skipping because not done.')
-def test_update():
-    # Initial check to ensure the key exists
-    initial_entry = txt.read_one(txt.TEST_KEY)
-    assert initial_entry == {txt.TITLE: 'Home Page', txt.TEXT: 'This is a journal about building API servers.'}
+def test_update(temp_text):
+    txt.update(temp_text, 'Updated', 'This is an updated page')
 
-    # Update the entry with new title and text
-    new_title = 'Updated Home Page'
-    new_text = 'Updated journal about building API servers.'
-    txt.update(txt.TEST_KEY, new_title, new_text)
-
-    # Check that the update was successful
-    updated_entry = txt.read_one(txt.TEST_KEY)
-    assert updated_entry[txt.TITLE] == new_title
-    assert updated_entry[txt.TEXT] == new_text
+def test_update_not_found():
+    with pytest.raises(ValueError, 
+                       match="Updating non-existent text: key='Not Found Text'"):
+        txt.update('Not Found Text', 'Not Found', 'This is not found')

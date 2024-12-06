@@ -129,12 +129,10 @@ def test_create_duplicate(temp_person):
 VALID_ROLES = ['ED', 'AU']
 
 
-@pytest.mark.skip('Skipping because not done.')
 def test_update(temp_person):
     ppl.update('Buffalo Bill', 'UBuffalo', temp_person, VALID_ROLES)
 
 
-@pytest.mark.skip('Skipping because not done.')
 def test_update_not_there(temp_person):
     with pytest.raises(ValueError):
         ppl.update('Will Fail', 'University of the Void',

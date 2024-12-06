@@ -43,6 +43,16 @@ def exists(key: str) -> bool:
     return read_one(key)
 
 
+def read() -> dict:
+    """
+    Our contract:
+        - No arguments.
+        - Returns a dictionary of texts keyed on page keys
+    """
+    texts = dbc.read_dict(TEXT_COLLECTION, KEY)
+    return texts
+
+
 def read_one(key: str) -> dict:
     return dbc.read_one(TEXT_COLLECTION, {KEY: key})
 
@@ -52,22 +62,12 @@ def update(key: str, title: str, text: str):
     Updates an existing entry in the text_dict with a new title and text.
     If the key does not exist, it informs the user.
     """
-    if key in text_dict:
-        text_dict[key][TITLE] = title
-        text_dict[key][TEXT] = text
-        print(f'Key {key} has been updated.')
-    else:
-        print(f'Key {key} does not exist. Use create() to add it first.')
-
-
-def read():
-    """
-    Our contract:
-        - No arguments.
-        - Returns a dictionary of texts keyed on page keys
-    """
-    text = text_dict
-    return text
+    if not exists(key):
+        raise ValueError(f'Updating non-existent text: {key=}')
+    ret = dbc.update(TEXT_COLLECTION, {KEY: key},
+                     {KEY: key, TITLE: title, TEXT: text})
+    print(f'{ret=}')
+    return key
 
 
 def main():
