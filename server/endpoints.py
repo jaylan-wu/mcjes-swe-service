@@ -266,3 +266,16 @@ class UpdateJournalTitle(Resource):
             }, HTTPStatus.OK
         except Exception as err:
             return {"message": f"Update Failed: {err}"}, HTTPStatus.BAD_REQUEST
+
+
+@api.route(f'{PEOPLE_ROUTE}/search')
+class SearchPeople(Resource):
+    def get(self):
+        """
+        Search for people by name, affiliation, or email.
+        """
+        query = request.args.get('query', '').lower()
+        if not query:
+            return {"message": "Parameter required."}, HTTPStatus.BAD_REQUEST
+        results = ppl.search(query)
+        return {"results": results}, HTTPStatus.OK
