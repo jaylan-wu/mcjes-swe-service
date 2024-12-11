@@ -107,27 +107,15 @@ STATE_TABLE = {
         DONE: {
             FUNC: lambda **kwargs: AUTHOR_REV,
         },
-        ACCEPT: {
-            FUNC: lambda m: 'PUBLISHED',
-        },
-        REJECT: {
-            FUNC: lambda m: REJECTED,
-        },
         **COMMON_ACTIONS,
     },
     AUTHOR_REV: {
-        DONE: {
-            FUNC: lambda m: COPY_EDIT,
-        },
-        REJECT: {
-            FUNC: lambda m: REJECTED,
-        },
         **COMMON_ACTIONS,
     },
     REJECTED: {
         **COMMON_ACTIONS,
     },
-    'PUBLISHED': {
+    WITHDRAWN: {
         **COMMON_ACTIONS,
     },
 }
