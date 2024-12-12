@@ -1,10 +1,7 @@
 import pytest # type: ignore
 
 import data.people as ppl
-
-
-from data.roles import TEST_CODE as TEST_ROLE_CODE
-from data.people import PEOPLE_COLLECTION, EMAIL
+import data.roles as rls
 
 # test variables
 ADD_EMAIL = "janedoe@nyu.edu"
@@ -18,13 +15,24 @@ DOMAIN_TOO_LONG = 'janedoe@nyu.eedduu'
 
 TEMP_EMAIL = 'temp_person@example.org'
 
+test_roles = [
+    ('AU', 'Author', False),
+    ('CE', 'Consulting Editor', True),
+    ('ED', 'Editor', True),
+    ('ME', 'Managing Editor', True),
+    ('RE', 'Referee', False),
+]
 
 @pytest.fixture(scope='function')
 def temp_person():
-    email = ppl.create('Joe Smith', 'NYU', TEMP_EMAIL, TEST_ROLE_CODE)
+    for role_code, role, is_masthead in test_roles:
+        rls.create(role_code, role, is_masthead)
+    email = ppl.create('Joe Smith', 'NYU', TEMP_EMAIL, rls.TEST_CODE)
     yield email
     try:
         ppl.delete(email)
+        for role_code, role, is_masthead in test_roles:
+            rls.delete(role_code)
     except:
         print('Person already deleted.')
 
@@ -45,7 +53,7 @@ def test_create_mh_rec(temp_person):
 
 def test_has_role(temp_person):
     person_rec = ppl.read_one(temp_person)
-    assert ppl.has_role(person_rec, TEST_ROLE_CODE)
+    assert ppl.has_role(person_rec, rls.TEST_CODE)
 
 
 def test_doesnt_have_role(temp_person):
@@ -112,18 +120,21 @@ def test_delete(temp_person):
 
 
 def test_create():
+    for role_code, role, is_masthead in test_roles:
+        rls.create(role_code, role, is_masthead)
     if ppl.exists(ADD_EMAIL):  # Clean up if email exists
         ppl.delete(ADD_EMAIL)
-    ppl.create('Joe Smith', 'NYU', ADD_EMAIL, TEST_ROLE_CODE)
+    ppl.create('Joe Smith', 'NYU', ADD_EMAIL, rls.TEST_CODE)
     assert ppl.exists(ADD_EMAIL)
     ppl.delete(ADD_EMAIL)  # Cleanup after test
-
+    for role_code, role, is_masthead in test_roles:
+        rls.delete(role_code)
 
 def test_create_duplicate(temp_person):
     with pytest.raises(ValueError):
         ppl.create('Random name',
                    'Random affiliation', temp_person,
-                   TEST_ROLE_CODE)
+                   rls.TEST_CODE)
 
 
 VALID_ROLES = ['ED', 'AU']
@@ -142,7 +153,7 @@ def test_update_not_there(temp_person):
 def test_create_bad_email():
     with pytest.raises(ValueError):
         ppl.create('Do not care about name',
-                    'Or affiliation', 'bademail', TEST_ROLE_CODE)
+                    'Or affiliation', 'bademail', rls.TEST_CODE)
 
 
 def test_get_masthead():

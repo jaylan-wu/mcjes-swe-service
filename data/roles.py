@@ -15,6 +15,21 @@ def is_valid(code: str) -> bool:
     return code in roles
 
 
+def create(role_code: str, role: str, is_masthead: bool) -> bool:
+    roles = get_roles()
+    if role_code in roles:
+        print(f"Role with code {role_code} already exists.")
+        return False
+    new_role = {ROLE_CODE: role_code, ROLE: role,
+                IS_MASTHEAD: is_masthead}
+    dbc.create(ROLES_COLLECTION, new_role)
+    return role
+
+
+def delete(role_code: str) -> bool:
+    return dbc.delete(ROLES_COLLECTION, {ROLE_CODE: role_code})
+
+
 def get_roles() -> dict:
     roles = dbc.read_dict(ROLES_COLLECTION, ROLE_CODE)
     print(f'{roles=}')
