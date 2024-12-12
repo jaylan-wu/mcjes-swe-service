@@ -1,4 +1,11 @@
-from copy import deepcopy
+import data.db_connect as dbc
+
+ROLES_COLLECTION = 'roles'
+
+# data fields
+ROLE_CODE = 'role_code'
+ROLE = 'role'
+IS_MASTHEAD = 'is_masthead'
 
 AUTHOR_CODE = 'AU'
 TEST_CODE = 'AU'
@@ -19,26 +26,26 @@ MH_ROLES = [CE_CODE, ED_CODE, ME_CODE]
 
 
 def get_roles() -> dict:
-    return deepcopy(ROLES)
-
-
-def get_masthead_roles() -> dict:
-    mh_roles = get_roles()
-    del_mh_roles = []
-    for role in mh_roles:
-        if role not in MH_ROLES:
-            del_mh_roles.append(role)
-    for del_role in del_mh_roles:
-        del mh_roles[del_role]
-    return mh_roles
+    roles = dbc.read_dict(ROLES_COLLECTION, ROLE_CODE)
+    print(f'{roles=}')
+    return roles
 
 
 def get_role_codes() -> list:
-    return list(ROLES.keys())
+    roles = dbc.read_dict(ROLES_COLLECTION, ROLE_CODE)
+    return list(roles.keys())
+
+
+def get_masthead_roles() -> dict:
+    roles = get_roles()
+    masthead_roles = {code: data["role"] for code, data in roles.items()
+                      if data["is_masthead"]}
+    return masthead_roles
 
 
 def is_valid(code: str) -> bool:
-    return code in ROLES
+    roles = get_roles()
+    return code in roles
 
 
 def main():
