@@ -7,22 +7,12 @@ ROLE_CODE = 'role_code'
 ROLE = 'role'
 IS_MASTHEAD = 'is_masthead'
 
-AUTHOR_CODE = 'AU'
 TEST_CODE = 'AU'
-ED_CODE = 'ED'
-ME_CODE = 'ME'
-CE_CODE = 'CE'
-RE_CODE = 'RE'
 
-ROLES = {
-    AUTHOR_CODE: 'Author',
-    CE_CODE: 'Consulting Editor',
-    ED_CODE: 'Editor',
-    ME_CODE: 'Managing Editor',
-    RE_CODE: 'Referee',
-}
 
-MH_ROLES = [CE_CODE, ED_CODE, ME_CODE]
+def is_valid(code: str) -> bool:
+    roles = get_roles()
+    return code in roles
 
 
 def get_roles() -> dict:
@@ -41,11 +31,6 @@ def get_masthead_roles() -> dict:
     masthead_roles = {code: data["role"] for code, data in roles.items()
                       if data["is_masthead"]}
     return masthead_roles
-
-
-def is_valid(code: str) -> bool:
-    roles = get_roles()
-    return code in roles
 
 
 def main():

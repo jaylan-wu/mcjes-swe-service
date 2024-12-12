@@ -1,0 +1,6 @@
+role_code,role,is_masthead
+AU,Author,False
+CE,Consulting Editor,True
+ED,Editor,True
+ME,Managing Editor,True
+RE,Referee,False
