@@ -108,3 +108,9 @@ def fetch_all_as_dict(key, collection, db=SE_DB):
         del doc[MONGO_ID]
         ret[doc[key]] = doc
     return ret
+
+
+def count_documents(collection, db=SE_DB, filt=None):
+    if filt is None:
+        filt = {}
+    return client[db][collection].count_documents(filt)
