@@ -279,3 +279,18 @@ class SearchPeople(Resource):
             return {"message": "Parameter required."}, HTTPStatus.BAD_REQUEST
         results = ppl.search(query)
         return {"results": results}, HTTPStatus.OK
+
+
+@api.route(f'{PEOPLE_ROUTE}/rolesSummary')
+class RolesSummary(Resource):
+    """
+    Get a summary of all roles assigned to people.
+    """
+    def get(self):
+        try:
+            roles_summary = ppl.get_roles_summary()
+            return {"roles_summary": roles_summary}, HTTPStatus.OK
+        except Exception as err:
+            return {
+                "message": f"Failed to get role summary{err}"
+            }, HTTPStatus.INTERNAL_SERVER_ERROR
