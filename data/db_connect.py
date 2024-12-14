@@ -37,6 +37,8 @@ def connect_db():
                                     + '@swe-mcjes-db.mgzot.mongodb.net/'
                                     + '?retryWrites=true&w=majority&'
                                     + 'appName=swe-mcjes-db')
+            client.admin.command('ping')
+            print("Connected to MongoDB!")
         else:
             print("Connecting to Mongo locally.")
             client = pm.MongoClient()
