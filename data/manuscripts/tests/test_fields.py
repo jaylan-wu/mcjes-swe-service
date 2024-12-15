@@ -24,3 +24,9 @@ def test_invalid_field_disp_name():
     # Test if get_disp_name() returns None for an invalid field name
     disp_name = mflds.get_disp_name('invalid_field')
     assert disp_name is None, "Expected None for an invalid field name, but got something else."
+
+def test_missing_field_in_get_flds():
+    # Check if a non-existent field is not in the FIELDS dictionary
+    fields = mflds.get_flds()
+    assert 'invalid_field' not in fields, "Non-existent field should not be present in the FIELDS dictionary."
+
