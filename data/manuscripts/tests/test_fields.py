@@ -30,3 +30,14 @@ def test_missing_field_in_get_flds():
     fields = mflds.get_flds()
     assert 'invalid_field' not in fields, "Non-existent field should not be present in the FIELDS dictionary."
 
+def test_empty_fields():
+    # Temporarily override FIELDS to simulate an empty dictionary
+    original_fields = mflds.FIELDS
+    mflds.FIELDS = {}
+
+    try:
+        assert mflds.get_flds() == {}, "get_flds() should return an empty dictionary when FIELDS is empty."
+        assert mflds.get_fld_names() == [], "get_fld_names() should return an empty list when FIELDS is empty."
+        assert mflds.get_disp_name('title') is None, "get_disp_name() should return None when FIELDS is empty."
+    finally:
+        mflds.FIELDS = original_fields
