@@ -25,9 +25,10 @@ def get_fld_names() -> list:
 
 
 def get_disp_name(fld_nm: str) -> dict:
-    fld = FIELDS.get(fld_nm, '')
-    return fld[DISP_NAME]  # should we use get() here?
-
+    fld = FIELDS.get(fld_nm)
+    if isinstance(fld, dict):  # Ensure the field is a dictionary
+        return fld.get(DISP_NAME, None)  # Return the display name if it exists
+    return None  # Return None if the field is invalid or not a dictionary
 
 def main():
     print(f'{get_flds()=}')
