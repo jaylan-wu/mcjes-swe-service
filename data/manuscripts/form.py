@@ -2,7 +2,7 @@
 This module provides a sample query form.
 """
 
-import backendcore.data.form_filler as ff
+from backendcore.data import form_filler as ff
 
 from templates.fields import CODE
 
