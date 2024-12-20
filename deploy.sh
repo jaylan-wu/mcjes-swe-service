@@ -8,6 +8,7 @@ PA_USER='jaylanwu'
 echo "Project dir = $PROJ_DIR"
 echo "PA domain = $PA_DOMAIN"
 echo "Virtual env = $VENV"
+echo "Token = $API_TOKEN"
 
 if [ -z "$PA_PWD" ]
 then

@@ -14,8 +14,8 @@ source /home/$PA_USER/.virtualenvs/$VENV/bin/activate
 echo "Install packages"
 pip install --upgrade -r requirements.txt
 
-echo "Going to reboot the webserver using $API_TOKEN"
 export API_TOKEN="$API_TOKEN"
+echo "Going to reboot the webserver using $API_TOKEN"
 pa_reload_webapp.py $PA_DOMAIN
 
 touch reboot

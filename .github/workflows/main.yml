@@ -51,5 +51,5 @@ jobs:
       - name: Deploy to PythonAnywhere
         run: ./deploy.sh
         env:
-          PA_PWD: ${{secrets.PA_PWD}}
+          PA_PWD: ${{ secrets.PA_PWD }}
           API_TOKEN: ${{ secrets.API_TOKEN }}
