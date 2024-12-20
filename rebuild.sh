@@ -5,7 +5,7 @@
 touch rebuild
 echo "Rebuilding $PA_DOMAIN"
 
-echo "Pulling code from master"
+echo "Pulling code from main"
 git pull origin main
 
 echo "Activate the virtual env $VENV for user $PA_USER"
