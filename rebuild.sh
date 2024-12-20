@@ -15,6 +15,7 @@ echo "Install packages"
 pip install --upgrade -r requirements.txt
 
 echo "Going to reboot the webserver using $API_TOKEN"
+export API_TOKEN=${{ secrets.API_TOKEN }}
 pa_reload_webapp.py $PA_DOMAIN
 
 touch reboot
