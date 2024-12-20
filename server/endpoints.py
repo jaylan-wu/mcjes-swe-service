@@ -181,7 +181,7 @@ class Texts(Resource):
     """
     def get(self):
         """
-        Retrieve all people
+        Retrieve all texts
         """
         return txt.read()
 
