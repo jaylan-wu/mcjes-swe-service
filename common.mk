@@ -1,7 +1,6 @@
 # common make vars and targets:
 export LINTER = flake8
 export PYLINTFLAGS = --exclude=__main__.py
-
 export CLOUD_MONGO=0
 
 PYTHONFILES = $(shell ls *.py)
