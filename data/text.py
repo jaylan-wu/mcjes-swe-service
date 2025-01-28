@@ -5,7 +5,6 @@ TEXT_COLLECTION = 'text'
 KEY = 'key'
 TITLE = 'title'
 TEXT = 'text'
-EMAIL = 'email'
 
 TEST_KEY = 'HomePage'
 SUBM_KEY = 'SubmissionsPage'

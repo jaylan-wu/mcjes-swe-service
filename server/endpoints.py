@@ -12,10 +12,10 @@ from flask import request
 import werkzeug.exceptions as wz
 
 # import routes and responses
-from server.routes import (ENDPOINT_ROUTE, HELLO_ROUTE, JOURNAL_ROUTE,
+from server.routes import (ENDPOINT_ROUTE, JOURNAL_ROUTE,
                            PEOPLE_ROUTE, TEXT_ROUTE, TITLE_ROUTE)
 from server.responses import (DATE, DATE_RESP, EDITOR, EDITOR_RESP,
-                              ENDPOINT_RESP, HELLO_RESP, JOURNAL_NAME,
+                              ENDPOINT_RESP, JOURNAL_NAME,
                               JOURNAL_RESP, MASTHEAD_RESP, TITLE, TITLE_RESP)
 
 # import data classes
@@ -42,19 +42,6 @@ class Endpoints(Resource):
         """
         endpoints = sorted(rule.rule for rule in api.app.url_map.iter_rules())
         return {ENDPOINT_RESP: endpoints}
-
-
-@api.route(HELLO_ROUTE)
-class HelloWorld(Resource):
-    """
-    The purpose of the HelloWorld class is to have a simple test to see if the
-    app is working at all.
-    """
-    def get(self):
-        """
-        A trivial endpoint to see if the server is running.
-        """
-        return {HELLO_RESP: 'world'}
 
 
 @api.route(TITLE_ROUTE)
@@ -177,7 +164,7 @@ class Masthead(Resource):
 @api.route(TEXT_ROUTE)
 class Texts(Resource):
     """
-    The purpose of this is to class is to return all texts
+    The purpose of this is to endpoint is to return all texts
     """
     def get(self):
         """
@@ -189,7 +176,7 @@ class Texts(Resource):
 @api.route(f'{TEXT_ROUTE}/<_id>')
 class Text(Resource):
     """
-    The purpose of this is to return a single text
+    The purpose of this is to return a single text given a text key
     """
     def get(self, _id):
         """
@@ -197,6 +184,39 @@ class Text(Resource):
         """
         ret = txt.read_one(_id)
         return {'Message': ret}
+
+
+TEXT_CREATE_FLDS = api.model('AddNewTextEntry', {
+    txt.KEY: fields.String,
+    txt.TITLE: fields.String,
+    txt.TEXT: fields.String,
+})
+
+
+@api.route(f'{TEXT_ROUTE}/create')
+class TextCreate(Resource):
+    """
+    Add a text to the journal db.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.expect(TEXT_CREATE_FLDS)
+    def put(self):
+        """
+        Add a Text.
+        """
+        try:
+            key = request.json.get(txt.KEY)
+            title = request.json.get(txt.TITLE)
+            text = request.json.get(txt.TEXT)
+            ret = txt.create(key, title, text)
+        except Exception as err:
+            raise wz.NotAcceptable(f'Could not add text: '
+                                   f'{err=}')
+        return {
+            MESSAGE: 'Text added!',
+            RETURN: ret,
+        }
 
 
 @api.route('/people/<string:email>/addRole/<string:role>')
