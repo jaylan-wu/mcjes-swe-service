@@ -61,8 +61,3 @@ class Texts:
                          {self.KEY: key, self.TITLE: title, self.TEXT: text})
         print(f'{ret=}')
         return key
-
-
-if __name__ == '__main__':
-    txts = Texts()
-    print(txts.read())

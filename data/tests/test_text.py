@@ -67,6 +67,7 @@ def test_update(temp_text):
     test_text = txts.read_one(temp_text)
     assert test_text[txts.TITLE] == 'Updated'
 
+
 def test_update_not_found():
     with pytest.raises(ValueError, match="Updating non-existent text: key='NotFoundText'"):
         txts.update('NotFoundText', 'Not Found', 'This is not found')
