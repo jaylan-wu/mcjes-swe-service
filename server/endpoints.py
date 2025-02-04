@@ -20,7 +20,10 @@ from server.responses import (DATE, DATE_RESP, EDITOR, EDITOR_RESP,
 
 # import data classes
 import data.people as ppl
-import data.text as txt
+from data.texts import Texts
+
+# object instances for data
+txts = Texts()
 
 app = Flask(__name__)
 CORS(app)
@@ -170,7 +173,7 @@ class Texts(Resource):
         """
         Retrieve all texts
         """
-        return txt.read()
+        return txts.read()
 
 
 @api.route(f'{TEXT_ROUTE}/<_id>')
@@ -182,14 +185,14 @@ class Text(Resource):
         """
         Obtains id(KEY) and get a text from library with read_one.
         """
-        ret = txt.read_one(_id)
+        ret = txts.read_one(_id)
         return {'Message': ret}
 
 
 TEXT_CREATE_FLDS = api.model('AddNewTextEntry', {
-    txt.KEY: fields.String,
-    txt.TITLE: fields.String,
-    txt.TEXT: fields.String,
+    txts.KEY: fields.String,
+    txts.TITLE: fields.String,
+    txts.TEXT: fields.String,
 })
 
 
@@ -206,10 +209,10 @@ class TextCreate(Resource):
         Add a Text.
         """
         try:
-            key = request.json.get(txt.KEY)
-            title = request.json.get(txt.TITLE)
-            text = request.json.get(txt.TEXT)
-            ret = txt.create(key, title, text)
+            key = request.json.get(txts.KEY)
+            title = request.json.get(txts.TITLE)
+            text = request.json.get(txts.TEXT)
+            ret = txts.create(key, title, text)
         except Exception as err:
             raise wz.NotAcceptable(f'Could not add text: '
                                    f'{err=}')

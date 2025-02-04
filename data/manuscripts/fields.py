@@ -1,12 +1,21 @@
+'''
+This file contains all the fields of a manuscript datatype
+'''
 
 TITLE = 'title'
 DISP_NAME = 'disp_name'
+ABSTRACT = 'abstract'
+TEXT = 'text'
 AUTHOR = 'author'
+AUTHOR_EMAIL = 'author_email'
 REFEREES = 'referees'
+EDITOR = 'editor'
+STATE = 'state'
+REPORT = 'report'
+VERDICT = 'verdict'
 
 TEST_FLD_NM = TITLE
 TEST_FLD_DISP_NM = 'Title'
-
 
 
 FIELDS = {
@@ -29,6 +38,7 @@ def get_disp_name(fld_nm: str) -> dict:
     if isinstance(fld, dict):  # Ensure the field is a dictionary
         return fld.get(DISP_NAME, None)  # Return the display name if it exists
     return None  # Return None if the field is invalid or not a dictionary
+
 
 def main():
     print(f'{get_flds()=}')
