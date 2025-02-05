@@ -21,10 +21,13 @@ from server.responses import (DATE, DATE_RESP, EDITOR, EDITOR_RESP,
 # import data classes
 import data.people as ppl
 from data.texts import Texts
+from data.roles import Roles
 
 # object instances for data
 txts = Texts()
+rls = Roles()
 
+# Start Flask App
 app = Flask(__name__)
 CORS(app)
 api = Api(app)

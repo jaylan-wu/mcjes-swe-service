@@ -1,7 +1,13 @@
 import pytest
 
-import data.roles as rls
 import data.db_connect as dbc
+from data.roles import Roles
+
+# Instantiate roles object for testing
+rls = Roles()
+
+# Test Variables
+TEST_CODE = 'AU'
 
 test_roles = [
     ('AU', 'Author', False),
@@ -21,7 +27,7 @@ def temp_roles():
 
 
 def test_is_valid(temp_roles):
-    assert rls.is_valid(rls.TEST_CODE)
+    assert rls.is_valid(TEST_CODE)
 
 
 def test_get_roles(temp_roles):

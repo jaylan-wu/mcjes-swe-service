@@ -27,13 +27,13 @@ class Texts:
         """
         if self.exists(key):
             raise ValueError(f'Adding duplicate: {key=}')
-        text = {self.KEY: key, self.TITLE: title, self.TEXT: text}
-        dbc.create(self.TEXTS_COLLECTION, text)
+        new_text = {self.KEY: key, self.TITLE: title, self.TEXT: text}
+        dbc.create(self.TEXTS_COLLECTION, new_text)
         return key
 
     def delete(self, key: str):
         """
-        Deletes a text give a key
+        Deletes a text given a key
         """
         dbc.delete(self.TEXTS_COLLECTION, {self.KEY: key})
 

@@ -1,13 +1,13 @@
 import pytest
 from data.texts import Texts
 
-txts = Texts()
-
-ADD_TEXT = "Test Text"
-
+# Test variables
 TEST_KEY = 'HomePage'
 TEST_TITLE = 'Home Page'
 TEST_TEXT = 'This is a journal about building API servers.'
+
+# Instantiate txts object for testing
+txts = Texts()
 
 @pytest.fixture(scope='function')
 def temp_text():

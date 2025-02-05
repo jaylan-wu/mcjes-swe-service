@@ -4,7 +4,10 @@ In this module, we interface with the People Datatype
 import re
 
 import data.db_connect as dbc
-import data.roles as rls
+from data.roles import Roles
+
+# Instantiate Roles object
+rls = Roles()
 
 PEOPLE_COLLECTION = 'people'
 

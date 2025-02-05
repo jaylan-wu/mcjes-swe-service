@@ -1,9 +1,12 @@
-import pytest # type: ignore
+import pytest
 
 import data.people as ppl
-import data.roles as rls
+from data.roles import Roles
 
-# test variables
+# Instantiate Roles Object
+rls = Roles()
+
+# Test Variables
 ADD_EMAIL = "janedoe@nyu.edu"
 NO_AT = "janedoenyu.edu"
 NO_NAME = "@nyu.edu"
@@ -14,6 +17,8 @@ DOMAIN_TOO_SHORT = 'janedoe@nyu.e'
 DOMAIN_TOO_LONG = 'janedoe@nyu.eedduu'
 
 TEMP_EMAIL = 'temp_person@example.org'
+
+TEST_CODE = 'AU'
 
 test_roles = [
     ('AU', 'Author', False),
@@ -27,7 +32,7 @@ test_roles = [
 def temp_person():
     for role_code, role, is_masthead in test_roles:
         rls.create(role_code, role, is_masthead)
-    email = ppl.create('Joe Smith', 'NYU', TEMP_EMAIL, rls.TEST_CODE)
+    email = ppl.create('Joe Smith', 'NYU', TEMP_EMAIL, TEST_CODE)
     yield email
     try:
         ppl.delete(email)
@@ -53,7 +58,7 @@ def test_create_mh_rec(temp_person):
 
 def test_has_role(temp_person):
     person_rec = ppl.read_one(temp_person)
-    assert ppl.has_role(person_rec, rls.TEST_CODE)
+    assert ppl.has_role(person_rec, TEST_CODE)
 
 
 def test_doesnt_have_role(temp_person):
@@ -124,7 +129,7 @@ def test_create():
         rls.create(role_code, role, is_masthead)
     if ppl.exists(ADD_EMAIL):  # Clean up if email exists
         ppl.delete(ADD_EMAIL)
-    ppl.create('Joe Smith', 'NYU', ADD_EMAIL, rls.TEST_CODE)
+    ppl.create('Joe Smith', 'NYU', ADD_EMAIL, TEST_CODE)
     assert ppl.exists(ADD_EMAIL)
     ppl.delete(ADD_EMAIL)  # Cleanup after test
     for role_code, role, is_masthead in test_roles:
@@ -134,7 +139,7 @@ def test_create_duplicate(temp_person):
     with pytest.raises(ValueError):
         ppl.create('Random name',
                    'Random affiliation', temp_person,
-                   rls.TEST_CODE)
+                   TEST_CODE)
 
 
 VALID_ROLES = ['ED', 'AU']
@@ -153,7 +158,7 @@ def test_update_not_there(temp_person):
 def test_create_bad_email():
     with pytest.raises(ValueError):
         ppl.create('Do not care about name',
-                    'Or affiliation', 'bademail', rls.TEST_CODE)
+                    'Or affiliation', 'bademail', TEST_CODE)
 
 
 def test_get_masthead():
