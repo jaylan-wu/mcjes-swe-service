@@ -11,8 +11,12 @@ from http.client import (
 
 from unittest.mock import patch
 # import data classes
-import data.people as ppl
+from data.people import People
 from data.texts import Texts
+
+# object instances for data
+txts = Texts()
+ppl = People()
 
 import pytest # type: ignore
 
@@ -49,7 +53,7 @@ def test_people():
     for _id, person in resp_json.items():
         assert isinstance(_id, str)
         assert len(_id) > 0
-        assert ppl.NAME in person
+        assert ppl.FIRST_NAME in person
 
 
 @pytest.mark.skip('Skipping because not done.')

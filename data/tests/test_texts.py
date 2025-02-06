@@ -1,4 +1,5 @@
 import pytest
+
 from data.texts import Texts
 
 # Test variables

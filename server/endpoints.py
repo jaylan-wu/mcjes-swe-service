@@ -19,13 +19,14 @@ from server.responses import (DATE, DATE_RESP, EDITOR, EDITOR_RESP,
                               JOURNAL_RESP, MASTHEAD_RESP, TITLE, TITLE_RESP)
 
 # import data classes
-import data.people as ppl
-from data.texts import Texts
+from data.people import People
 from data.roles import Roles
+from data.texts import Texts
 
 # object instances for data
 txts = Texts()
 rls = Roles()
+ppl = People()
 
 # Start Flask App
 app = Flask(__name__)
@@ -98,7 +99,7 @@ class Person(Resource):
     """
     def get(self, email):
         """
-        Obtains id(email) and gets person from library with read_one.
+        Obtains id(email) and gets person from database with read_one.
         """
         ret = ppl.read_one(email)
         if ret is None:
@@ -124,7 +125,8 @@ RETURN = 'return'
 
 
 PEOPLE_CREATE_FLDS = api.model('AddNewPeopleEntry', {
-    ppl.NAME: fields.String,
+    ppl.FIRST_NAME: fields.String,
+    ppl.LAST_NAME: fields.String,
     ppl.EMAIL: fields.String,
     ppl.AFFILIATION: fields.String,
     ppl.ROLES: fields.String,
@@ -144,11 +146,12 @@ class PeopleCreate(Resource):
         Add a person.
         """
         try:
-            name = request.json.get(ppl.NAME)
+            first_name = request.json.get(ppl.FIRST_NAME)
+            last_name = request.json.get(ppl.LAST_NAME)
             affiliation = request.json.get(ppl.AFFILIATION)
             email = request.json.get(ppl.EMAIL)
             role = request.json.get(ppl.ROLES)
-            ret = ppl.create(name, affiliation, email, role)
+            ret = ppl.create(first_name, last_name, affiliation, email, role)
         except Exception as err:
             raise wz.NotAcceptable(f'Could not add person: '
                                    f'{err=}')

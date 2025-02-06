@@ -16,25 +16,22 @@ class Roles:
         self.ROLE = 'role'
         self.IS_MASTHEAD = 'is_masthead'
 
-    def is_valid(self, code: str) -> bool:
+    def exists(self, role_code: str) -> bool:
         """
         A role is valid if it exists in the database
         """
-        roles = self.get_roles()
-        return code in roles
+        return bool(self.read_one(role_code))
 
-    def create(self, role_code: str, role: str, is_masthead: bool) -> bool:
+    def create(self, role_code: str, role: str, is_masthead: bool) -> str:
         """
         Creates a new role if the key doesn't exist
         """
-        roles = self.get_roles()
-        if role_code in roles:
-            print(f"Role with code {role_code} already exists.")
-            return False
+        if self.exists(role_code):
+            raise ValueError(f'Adding duplicate: {role_code=}')
         new_role = {self.ROLE_CODE: role_code, self.ROLE: role,
                     self.IS_MASTHEAD: is_masthead}
         dbc.create(self.ROLES_COLLECTION, new_role)
-        return role
+        return role_code
 
     def delete(self, role_code: str) -> bool:
         """
@@ -43,13 +40,18 @@ class Roles:
         return dbc.delete(self.ROLES_COLLECTION,
                           {self.ROLE_CODE: role_code})
 
-    def get_roles(self) -> dict:
+    def read(self) -> dict:
         """
         Returns all possible roles and their full details
         """
         roles = dbc.read_dict(self.ROLES_COLLECTION, self.ROLE_CODE)
-        print(f'{roles=}')
         return roles
+
+    def read_one(self, role_code: str) -> dict:
+        """
+        Returns an instance of a role given a role_code
+        """
+        return dbc.read_one(self.ROLES_COLLECTION, {self.ROLE_CODE: role_code})
 
     def get_role_codes(self) -> list:
         """
@@ -62,7 +64,7 @@ class Roles:
         """
         Returns a dictionary of masthead roles
         """
-        roles = self.get_roles()
+        roles = self.read()
         masthead_roles = {code: data["role"] for code, data in roles.items()
                           if data["is_masthead"]}
         return masthead_roles

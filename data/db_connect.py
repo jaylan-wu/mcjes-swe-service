@@ -1,5 +1,6 @@
 """
-All interaction with MongoDB should be through this file!
+TODO: This should be made into an object
+All interaction with MongoDB should be through this file.
 We may be required to use a new database at any point.
 """
 import os
@@ -19,10 +20,8 @@ MONGO_ID = '_id'
 def connect_db():
     """
     This provides a uniform way to connect to the DB across all uses.
-    Returns a mongo client object... maybe we shouldn't?
-    Also set global client variable.
-    We should probably either return a client OR set a
-    client global.
+    Creates a global client that all files will be using.
+    The client will be returned to notify which client is in use.
     """
     global client
     if client is None:  # not connected yet!
@@ -32,7 +31,7 @@ def connect_db():
             if not password:
                 raise ValueError('You must set your password '
                                  + 'to use Mongo in the cloud.')
-            print("Connecting to Mongo in the cloud.")
+            print("Connecting to Mongo in the cloud...")
             client = pm.MongoClient(f'mongodb+srv://mv2210:{password}'
                                     + '@swe-mcjes-db.mgzot.mongodb.net/'
                                     + '?retryWrites=true&w=majority&'
@@ -117,3 +116,8 @@ def count_documents(collection, db=SE_DB, filt=None):
     if filt is None:
         filt = {}
     return client[db][collection].count_documents(filt)
+
+
+# Start the MongoDB connection
+client = connect_db()
+print(f'{client=}')
