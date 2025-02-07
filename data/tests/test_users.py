@@ -1,4 +1,4 @@
-import pytest
+import pytest # type: ignore
 import unittest.mock as mock
 import data.users as usrs
 

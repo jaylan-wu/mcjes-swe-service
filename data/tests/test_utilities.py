@@ -1,4 +1,4 @@
-import pytest
+import pytest # type: ignore
 
 # Import Utilities object
 from data.utilities import Utilities

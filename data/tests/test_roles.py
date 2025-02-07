@@ -1,4 +1,4 @@
-import pytest
+import pytest # type: ignore
 
 from data.roles import Roles
 

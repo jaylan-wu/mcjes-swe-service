@@ -1,4 +1,4 @@
-import pytest
+import pytest # type: ignore
 
 from data.people import People
 from data.roles import Roles
@@ -106,6 +106,8 @@ def test_has_role(temp_person):
     assert ppl.has_role(ppl.read_one(temp_person), 'NO') == False
 
 
-def test_get_masthead():
+def test_get_masthead(temp_person):
+    ppl.create('Jane', 'Doe', 'NYU', "jane@nyu.edu", ['CE'])
     mh = ppl.get_masthead()
     assert isinstance(mh, dict)
+    ppl.delete('jane@nyu.edu')
