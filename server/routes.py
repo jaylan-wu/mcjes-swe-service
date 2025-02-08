@@ -1,6 +1,14 @@
-# Define API endpoint routes in alphabetical order
-ENDPOINT_ROUTE = '/endpoints'
-JOURNAL_ROUTE = '/journal'
-PEOPLE_ROUTE = '/people'
-TEXT_ROUTE = '/text'
-TITLE_ROUTE = '/title'
+'''
+In this module, we create a class that holds all
+of our possible API endpoints
+'''
+
+
+class Routes:
+    def __init__(self):
+        self.ENDPOINTS = '/endpoints'
+        self.JOURNAL = '/journal'
+        self.PEOPLE = '/people'
+        self.MASTHEAD = '/masthead'
+        self.TEXTS = '/texts'
+        self.TITLE = '/title'

@@ -1,12 +1,14 @@
-# Endpoint responses in alphabetical order
-DATE = '2024-09-24'
-DATE_RESP = 'Date'
-EDITOR = 'ejc369@nyu.edu'
-EDITOR_RESP = 'Editor'
-ENDPOINT_RESP = 'Available endpoints'
-HELLO_RESP = 'hello'
-JOURNAL_NAME = 'mcjes'
-JOURNAL_RESP = 'Journal Name'
-MASTHEAD_RESP = 'Masthead'
-TITLE = 'The Journal of API Technology'
-TITLE_RESP = 'Title'
+'''
+In this module, we create a class that holds all
+of our possible API endpoints responses.
+'''
+
+
+class Responses:
+    def __init__(self):
+        self.DATE = 'Date'
+        self.EDITOR = 'Editor'
+        self.ENDPOINTS = 'Available Endpoints'
+        self.JOURNAL = 'Journal'
+        self.MASTHEAD = 'Masthead'
+        self.TITLE = 'Title'

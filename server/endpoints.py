@@ -4,24 +4,23 @@ The endpoint called `endpoints` will return all available endpoints.
 """
 from http import HTTPStatus
 
-from flask import Flask  # type: ignore -> , request
+from flask import Flask, request  # type: ignore -> , request
 from flask_restx import Resource, Api, fields   # type: ignore -> Namespace
 from flask_cors import CORS  # type: ignore
-from flask import request
+import werkzeug.exceptions as wz  # type: ignore
 
-import werkzeug.exceptions as wz
-
-# import routes and responses
-from server.routes import (ENDPOINT_ROUTE, JOURNAL_ROUTE,
-                           PEOPLE_ROUTE, TEXT_ROUTE, TITLE_ROUTE)
-from server.responses import (DATE, DATE_RESP, EDITOR, EDITOR_RESP,
-                              ENDPOINT_RESP, JOURNAL_NAME,
-                              JOURNAL_RESP, MASTHEAD_RESP, TITLE, TITLE_RESP)
+# import server classes
+from server.routes import Routes
+from server.responses import Responses
 
 # import data classes
 from data.people import People
 from data.roles import Roles
 from data.texts import Texts
+
+# object instances for servers
+routes = Routes()
+responses = Responses()
 
 # object instances for data
 txts = Texts()
@@ -33,57 +32,43 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-# Define the PEOPLE_EP constant for consistency
-PEOPLE_EP = PEOPLE_ROUTE
 
-
-@api.route(ENDPOINT_ROUTE)
+@api.route(routes.ENDPOINTS)
 class Endpoints(Resource):
     """
-    This class will serve as live, fetchable documentation of what endpoints
+    This class serves as live, fetchable documentation of what endpoints
     are available in the system.
     """
     def get(self):
         """
-        The `get()` method will return a sorted list of available endpoints.
+        Retrieves a sorted list of available endpoints.
         """
         endpoints = sorted(rule.rule for rule in api.app.url_map.iter_rules())
-        return {ENDPOINT_RESP: endpoints}
+        return {responses.ENDPOINTS: endpoints}
 
 
-@api.route(TITLE_ROUTE)
-class JournalTitle(Resource):
+@api.route(routes.JOURNAL)
+class Journal(Resource):
     """
     This class handles creating, reading, updating
     and deleting the journal title.
     """
     def get(self):
         """
-        Retrieve the journal title.
+        A trivial endpoint to see if the server is running.
         """
         return {
-            TITLE_RESP: TITLE,
-            EDITOR_RESP: EDITOR,
-            DATE_RESP: DATE,
+            responses.JOURNAL: 'Journal of NYU SWE',
+            responses.TITLE: 'MCJES',
+            responses.EDITOR: 'Max, Cheyenne, Jaylan, Eduardo, & Sadaat',
         }
 
 
-@api.route(JOURNAL_ROUTE)
-class JournalName(Resource):
-    """
-    The purpose of this class is to return Journal Name
-    """
-    def get(self):
-        """
-        A trivial endpoint to see if the server is running.
-        """
-        return {JOURNAL_RESP: JOURNAL_NAME}
-
-
-@api.route(PEOPLE_ROUTE)
+@api.route(routes.PEOPLE)
 class People(Resource):
     """
-    The purpose of this is to class is to return all people
+    This class is a resource to manage people-related requests.
+    This is for multiple amounts of people.
     """
     def get(self):
         """
@@ -92,7 +77,7 @@ class People(Resource):
         return ppl.read()
 
 
-@api.route(f'{PEOPLE_ROUTE}/<_id>')
+@api.route(f'{routes.PEOPLE}/<_id>')
 class Person(Resource):
     """
     The purpose of this is to return a single person.
@@ -107,7 +92,7 @@ class Person(Resource):
         return {"Message": ret}, HTTPStatus.OK
 
 
-@api.route(f'{PEOPLE_ROUTE}/delete/<_id>')
+@api.route(f'{routes.PEOPLE}/delete/<_id>')
 class PersonDelete(Resource):
     """
     The purpose of this is to Delete a single person.
@@ -133,7 +118,7 @@ PEOPLE_CREATE_FLDS = api.model('AddNewPeopleEntry', {
 })
 
 
-@api.route(f'{PEOPLE_ROUTE}/create')
+@api.route(f'{routes.PEOPLE}/create')
 class PeopleCreate(Resource):
     """
     Add a person to the journal db.
@@ -161,19 +146,20 @@ class PeopleCreate(Resource):
         }
 
 
-@api.route(f'{PEOPLE_ROUTE}/masthead')
+@api.route(f'{routes.PEOPLE}/masthead')
 class Masthead(Resource):
     """
     Get a journal's masthead.
     """
     def get(self):
-        return {MASTHEAD_RESP: ppl.get_masthead()}
+        return {responses.MASTHEAD: ppl.get_masthead()}
 
 
-@api.route(TEXT_ROUTE)
+@api.route(routes.TEXTS)
 class Texts(Resource):
     """
-    The purpose of this is to endpoint is to return all texts
+    This class is a resource to manage text-related requests.
+    This is for multiple amounts of texts.
     """
     def get(self):
         """
@@ -182,7 +168,7 @@ class Texts(Resource):
         return txts.read()
 
 
-@api.route(f'{TEXT_ROUTE}/<_id>')
+@api.route(f'{routes.TEXTS}/<_id>')
 class Text(Resource):
     """
     The purpose of this is to return a single text given a text key
@@ -193,133 +179,3 @@ class Text(Resource):
         """
         ret = txts.read_one(_id)
         return {'Message': ret}
-
-
-TEXT_CREATE_FLDS = api.model('AddNewTextEntry', {
-    txts.KEY: fields.String,
-    txts.TITLE: fields.String,
-    txts.TEXT: fields.String,
-})
-
-
-@api.route(f'{TEXT_ROUTE}/create')
-class TextCreate(Resource):
-    """
-    Add a text to the journal db.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
-    @api.expect(TEXT_CREATE_FLDS)
-    def put(self):
-        """
-        Add a Text.
-        """
-        try:
-            key = request.json.get(txts.KEY)
-            title = request.json.get(txts.TITLE)
-            text = request.json.get(txts.TEXT)
-            ret = txts.create(key, title, text)
-        except Exception as err:
-            raise wz.NotAcceptable(f'Could not add text: '
-                                   f'{err=}')
-        return {
-            MESSAGE: 'Text added!',
-            RETURN: ret,
-        }
-
-
-@api.route('/people/<string:email>/addRole/<string:role>')
-class AddRole(Resource):
-    def put(self, email, role):
-        try:
-            person = ppl.get_person(email)
-        except ValueError:
-            mssg = f"{person} not found, please create the person first"
-            return {"message": mssg}, 404
-        try:
-            ppl.add_role(email, role)
-        except KeyError as err:
-            return {"message": err}, 404
-        return {"message": f"Role '{role}' added to {email}"}
-
-
-@api.route('/people/<string:email>/removeRole/<string:role>')
-class RemoveRole(Resource):
-    def put(self, email, role):
-        try:
-            person = ppl.get_person(email)
-        except ValueError:
-            mssg = f"{person} not found"
-            return {"message": mssg}, 404
-        try:
-            ppl.remove_role(email, role)
-        except KeyError:
-            return {"message": f"{role} doesn't exist"}, 404
-        return {"message": f"Role '{role}' removed from {email}"}
-
-
-TITLE_UPDATE_FIELDS = api.model('UpdateJournalTitle', {
-    'title': fields.String(description="The new title of the journal"),
-    'editor': fields.String(description="The new editor of the journal"),
-    'date': fields.String(description="The new publication date of journal")
-})
-
-
-@api.route(f'{TITLE_ROUTE}/update')
-class UpdateJournalTitle(Resource):
-    """
-    Update the journal title, editor, and publication date.
-    """
-    @api.expect(TITLE_UPDATE_FIELDS)
-    @api.response(HTTPStatus.OK, 'Title updated successfully')
-    @api.response(HTTPStatus.BAD_REQUEST, 'Invalid input')
-    def post(self):
-        """
-        Update journal title information.
-        """
-        try:
-            # Declare globals at the beginning of the function
-            global TITLE, EDITOR, DATE
-            new_title = request.json.get('title', TITLE)
-            new_editor = request.json.get('editor', EDITOR)
-            new_date = request.json.get('date', DATE)
-            # Update global variables or database records
-            TITLE = new_title
-            EDITOR = new_editor
-            DATE = new_date
-            return {
-                "message": "Journal title updated successfully",
-                TITLE_RESP: TITLE,
-                EDITOR_RESP: EDITOR,
-                DATE_RESP: DATE
-            }, HTTPStatus.OK
-        except Exception as err:
-            return {"message": f"Update Failed: {err}"}, HTTPStatus.BAD_REQUEST
-
-
-@api.route(f'{PEOPLE_ROUTE}/search')
-class SearchPeople(Resource):
-    def get(self):
-        """
-        Search for people by name, affiliation, or email.
-        """
-        query = request.args.get('query', '').lower()
-        if not query:
-            return {"message": "Parameter required."}, HTTPStatus.BAD_REQUEST
-        results = ppl.search(query)
-        return {"results": results}, HTTPStatus.OK
-
-
-@api.route(f'{PEOPLE_ROUTE}/rolesSummary')
-class RolesSummary(Resource):
-    """
-    Get a summary of all roles assigned to people.
-    """
-    def get(self):
-        try:
-            roles_summary = ppl.get_roles_summary()
-            return {"roles_summary": roles_summary}, HTTPStatus.OK
-        except Exception as err:
-            return {
-                "message": f"Failed to get role summary{err}"
-            }, HTTPStatus.INTERNAL_SERVER_ERROR

@@ -1,4 +1,4 @@
-import pytest
+import pytest  # type: ignore
 
 from http.client import (
     BAD_REQUEST,
@@ -10,45 +10,42 @@ from http.client import (
 )
 
 from unittest.mock import patch
+
+# import endpoints, routes, and responses
+import server.endpoints as ep
+from server.routes import Routes
+from server.responses import Responses
+
 # import data classes
 from data.people import People
 from data.texts import Texts
+
+# object instances for servers
+routes = Routes()
+responses = Responses()
 
 # object instances for data
 txts = Texts()
 ppl = People()
 
-import pytest # type: ignore
-
-# import endpoints, routes, and responses
-import server.endpoints as ep
-from server.routes import (ENDPOINT_ROUTE, JOURNAL_ROUTE,
-                           PEOPLE_ROUTE, TITLE_ROUTE)
-from server.responses import (DATE, DATE_RESP, EDITOR, EDITOR_RESP,
-                              ENDPOINT_RESP, JOURNAL_NAME,
-                              JOURNAL_RESP, TITLE, TITLE_RESP)
-
+# instantiate the test_client
 TEST_CLIENT = ep.app.test_client()
 
 
-def test_title():
-    resp = TEST_CLIENT.get(ep.TITLE_ROUTE)
-    print(f'{ep.TITLE_ROUTE=}')
+def test_endpoints():
+    resp = TEST_CLIENT.get(routes.ENDPOINTS)
     resp_json = resp.get_json()
-    print(f'{resp_json=}')
-    assert ep.TITLE_RESP in resp_json
-    assert isinstance(resp_json[ep.TITLE_RESP], str)
-    assert len(resp_json[ep.TITLE_RESP]) > 0
+    assert responses.ENDPOINTS in resp_json
 
 
 def test_journal():
-    resp = TEST_CLIENT.get(ep.JOURNAL_ROUTE)
+    resp = TEST_CLIENT.get(routes.JOURNAL)
     resp_json = resp.get_json()
-    assert ep.JOURNAL_RESP in resp_json
+    assert responses.JOURNAL in resp_json
 
 
 def test_people():
-    resp = TEST_CLIENT.get(ep.PEOPLE_ROUTE)
+    resp = TEST_CLIENT.get(routes.PEOPLE)
     resp_json = resp.get_json()
     for _id, person in resp_json.items():
         assert isinstance(_id, str)
@@ -79,14 +76,15 @@ def test_person():
     assert person[ppl.AFFILIATION] == expected_person[ppl.AFFILIATION], "Affiliation mismatch"
     assert person[ppl.ROLES] == expected_person[ppl.ROLES], "Roles mismatch"
 
-@pytest.mark.skip('Skipping because not done.')
+
 def test_texts():
-    resp = TEST_CLIENT.get(ep.TEXT_ROUTE)
+    resp = TEST_CLIENT.get(routes.TEXTS)
     resp_json = resp.get_json()
     for _id, text in resp_json.items():
         assert isinstance(_id, str)
         assert len(_id) > 0
-        assert txt.TITLE in text
+        assert txts.TITLE in text
+
 
 @pytest.mark.skip('Skipping because not done.')
 def test_text():
@@ -103,23 +101,3 @@ def test_text():
     assert txt.TITLE in text
     assert 'title' in text
     assert isinstance(text['title'], str)
-
-@pytest.mark.skip('Skipping because not done.')
-def test_read(mock_read):
-    resp = TEST_CLIENT.get(ep.PEOPLE_EP)
-    assert resp.status_code == OK
-    resp_json = resp.get_json()
-    for _id, person in resp_json.items():
-        assert isinstance(_id, str)
-        assert len(_id) > 0
-        assert ppl.NAME in person
-
-@pytest.mark.skip('Skipping because not done.')
-def test_read_one(mock_read):
-    resp = TEST_CLIENT.get(f'{ep.PEOPLE_EP}/mock_id')
-    assert resp.status_code == OK
-
-@pytest.mark.skip('Skipping because not done.')
-def test_read_one_not_found(mock_read):
-    resp = TEST_CLIENT.get(f'{ep.PEOPLE_EP}/mock_id')
-    assert resp.status_code == NOT_FOUND
