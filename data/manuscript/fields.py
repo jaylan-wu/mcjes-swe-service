@@ -1,5 +1,5 @@
 '''
-This file contains all the fields of a manuscript datatype
+This file contains the fields of a manuscript datatype
 '''
 
 TITLE = 'title'

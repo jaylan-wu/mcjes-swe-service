@@ -1,4 +1,4 @@
-import data.manuscripts.fields as mflds
+import data.manuscript.fields as mflds
 
 
 def test_get_flds():

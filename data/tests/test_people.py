@@ -9,7 +9,7 @@ ppl = People()
 rls = Roles()
 util = Utilities()
 
-# # Test Variables
+# Test Variables
 TEST_EMAIL = 'janedoe@nyu.edu'
 TEST_INEXISTENT_EMAIL = 'john@nyu.edu'
 TEST_ROLE_CODE = 'AU'

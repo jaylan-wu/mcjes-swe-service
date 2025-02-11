@@ -1,6 +1,5 @@
 """
-This is the file containing all of the endpoints for our flask app.
-The endpoint called `endpoints` will return all available endpoints.
+This file contains all of the endpoints for our flask app.
 """
 from http import HTTPStatus
 
@@ -77,7 +76,7 @@ class People(Resource):
         return ppl.read()
 
 
-@api.route(f'{routes.PEOPLE}/<_id>')
+@api.route(f'{routes.PEOPLE}/<_email>')
 class Person(Resource):
     """
     The purpose of this is to return a single person.
@@ -114,7 +113,7 @@ PEOPLE_CREATE_FLDS = api.model('AddNewPeopleEntry', {
     ppl.LAST_NAME: fields.String,
     ppl.EMAIL: fields.String,
     ppl.AFFILIATION: fields.String,
-    ppl.ROLES: fields.String,
+    ppl.ROLES: fields.List(fields.String),
 })
 
 

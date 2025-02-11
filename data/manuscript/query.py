@@ -1,4 +1,4 @@
-import data.manuscripts.fields as flds
+import data.manuscript.fields as flds
 
 # states:
 AUTHOR_REV = 'AUR'

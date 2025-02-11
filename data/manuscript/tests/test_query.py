@@ -2,7 +2,7 @@ import random
 
 import pytest
 
-import data.manuscripts.query as mqry
+import data.manuscript.query as mqry
 
 
 def gen_random_not_valid_str() -> str:
