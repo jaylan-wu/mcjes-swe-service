@@ -1,8 +1,8 @@
-"""
+'''
 In this file, we interface with the Manuscript Datatype.
 This is will handle our FSM actions for our Manuscripts as
 well as holding all the necessary fields.
-"""
+'''
 import data.db_connect as dbc
 from data.utilities import Utilities
 
@@ -84,19 +84,17 @@ class ManuscriptActions:
 
     def assign_ref(self, manuscript: dict, ref: str) -> str:
         manu = Manuscripts()
-        manu_states = ManuscriptStates()
         manuscript[manu.REFEREES].append(ref)
-        return manu_states.REF_REVIEW
+        return manu.STATES.REF_REVIEW
 
     def remove_ref(self, manuscript: dict, ref: str) -> str:
         manu = Manuscripts()
-        manu_states = ManuscriptStates()
         if ref in manuscript[manu.REFEREES]:
             manuscript[manu.REFEREES].remove(ref)
         if len(manuscript[manu.REFEREES]) > 0:
-            return manu_states.REF_REVIEW
+            return manu.STATES.REF_REVIEW
         else:
-            return manu_states.SUBMITTED
+            return manu.STATES.SUBMITTED
 
 
 class Manuscripts:
@@ -202,26 +200,26 @@ class Manuscripts:
         }
 
     def exists(self, manu_key: int) -> bool:
-        """
+        '''
         Check if an instance of a manuscripts exists
-        """
+        '''
         return bool(self.read_one(manu_key))
 
     def is_valid_manuscript(self, author_email: str):
-        """
+        '''
         Checks if an instance of a manuscript would be a valid
         manuscript to add on whether if they have a valid email
-        """
+        '''
         if not util.is_valid_email(author_email):
             raise ValueError(f'Invalid email: {author_email}')
         return True
 
     def create(self, title: str, display_name: str, abstract: str, text: str,
                author_fn: str, author_ln: str, author_email: str):
-        """
+        '''
         Creates a new instance of a person if email doesn't exist.
         Takes: first_name, last_name, email, affiliation, roles [list]
-        """
+        '''
         manu_key = len(self.read()) + 1
         if self.exists(manu_key):
             raise ValueError(f'Adding duplicate: {manu_key=}')
@@ -237,24 +235,31 @@ class Manuscripts:
             dbc.create(self.MANUSCRIPTS_COLLECTION, manuscript)
             return manuscript
 
+    def delete(self, manu_key: int):
+        '''
+        Deletes a manuscript given a manu_key
+        '''
+        return dbc.delete(self.MANUSCRIPTS_COLLECTION,
+                          {self.MANU_KEY, manu_key})
+
     def read(self) -> dict:
-        """
+        '''
         Returns a dictionary of all manuscripts keyed on manuscript keys
-        """
+        '''
         manuscripts = dbc.read_dict(self.MANUSCRIPTS_COLLECTION, self.MANU_KEY)
         return manuscripts
 
     def read_one(self, manu_key: int) -> dict:
-        """
+        '''
         Returns an instance of a manuscript given an manu_key
-        """
+        '''
         return dbc.read_one(self.MANUSCRIPTS_COLLECTION,
                             {self.MANU_KEY: manu_key})
 
     def update(self, manu_key: int, **kwargs):
-        """
+        '''
         Updates an existing manuscript with the provided fields.
-        """
+        '''
         if not self.exists(manu_key):
             raise ValueError(f'Manuscript with key {manu_key} not found.')
         if self.AUTHOR_EMAIL in kwargs:
