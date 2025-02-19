@@ -16,6 +16,7 @@ from server.responses import Responses
 from data.people import People
 from data.roles import Roles
 from data.texts import Texts
+from data.manuscripts import Manuscripts
 
 # object instances for servers
 routes = Routes()
@@ -25,6 +26,7 @@ responses = Responses()
 txts = Texts()
 rls = Roles()
 ppl = People()
+manu = Manuscripts()
 
 # Start Flask App
 app = Flask(__name__)
@@ -114,6 +116,7 @@ class Person(Resource):
         return ({"Message": "Person updated successfully",
                  "Person": updated_person}, HTTPStatus.OK)
 
+
 MESSAGE = 'Message'
 RETURN = 'return'
 
@@ -188,3 +191,16 @@ class Text(Resource):
         """
         ret = txts.read_one(_id)
         return {'Message': ret}
+
+
+@api.route(routes.MANUSCRIPTS)
+class Manuscripts(Resource):
+    """
+    This class is a resource to manage manuscript-related requests.
+    This is for multiple amounts of manuscripts.
+    """
+    def get(self):
+        """
+        Retrieve all manuscripts
+        """
+        return manu.read()

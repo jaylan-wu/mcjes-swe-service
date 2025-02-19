@@ -9,6 +9,7 @@ class Routes:
         self.ENDPOINTS = '/endpoints'
         self.JOURNAL = '/journal'
         self.PEOPLE = '/people'
+        self.MANUSCRIPTS = '/manuscripts'
         self.MASTHEAD = '/masthead'
         self.TEXTS = '/texts'
         self.TITLE = '/title'
