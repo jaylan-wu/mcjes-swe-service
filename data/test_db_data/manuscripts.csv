@@ -1,0 +1,4 @@
+manuscript_key,title,display_name,abstract,text,author_first_name,author_last_name,author_email,editor,referees,state
+1,Understanding AI,AI Research,An abstract about AI,Full text of the AI manuscript,Alice,Smith,alice.smith@example.com,Dr. Brown,"['Reviewer1', 'Reviewer2']",Submitted
+2,Quantum Computing Basics,Quantum Journal,Intro to quantum computing,Quantum computing text,Bob,Johnson,bob.johnson@example.com,Dr. Green,"['Reviewer3', 'Reviewer4']",In Review
+3,Climate Change Effects,Environmental Studies,Abstract on climate change,Detailed study on climate change,Charlie,Lee,charlie.lee@example.com,Dr. White,"['Reviewer5', 'Reviewer6']",Accepted

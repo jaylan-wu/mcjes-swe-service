@@ -76,21 +76,16 @@ class People:
         """
         return dbc.read_one(self.PEOPLE_COLLECTION, {self.EMAIL: email})
 
-    def update(self, first_name: str, last_name: str,
-               affiliation: str, email: str, roles: list):
+    def update(self, email: str, data: dict):
         """
         Updates an existing person
         Raises ValueError if the person does not exist
         """
         if not self.exists(email):
             raise ValueError(f'Updating non-existent person: {email=}')
-        if self.is_valid_person(email, roles):
+        if self.is_valid_person(email, data[self.ROLES]):
             person = dbc.update(self.PEOPLE_COLLECTION,
-                                {self.EMAIL: email},
-                                {self.FIRST_NAME: first_name,
-                                 self.LAST_NAME: first_name,
-                                 self.AFFILIATION: affiliation,
-                                 self.EMAIL: email, self.ROLES: roles})
+                                {self.EMAIL: email}, dict)
             return person
 
     def has_role(self, person: dict, role: str) -> bool:

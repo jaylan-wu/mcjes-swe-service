@@ -79,30 +79,40 @@ class People(Resource):
 @api.route(f'{routes.PEOPLE}/<_email>')
 class Person(Resource):
     """
-    The purpose of this is to return a single person.
+    The purpose of this class is have REST API a single person.
     """
-    def get(self, email):
+    def get(self, _email):
         """
-        Obtains id(email) and gets person from database with read_one.
+        Obtains _email and gets person from database with read_one.
         """
-        ret = ppl.read_one(email)
+        ret = ppl.read_one(_email)
         if ret is None:
             return {"Message": "Person not found"}, HTTPStatus.NOT_FOUND
         return {"Message": ret}, HTTPStatus.OK
 
-
-@api.route(f'{routes.PEOPLE}/delete/<_id>')
-class PersonDelete(Resource):
-    """
-    The purpose of this is to Delete a single person.
-    """
-    def delete(self, _id):
+    @api.response(HTTPStatus.NOT_FOUND, 'Person not found')
+    @api.response(HTTPStatus.NO_CONTENT, 'Person deleted successfully')
+    def delete(self, _email):
         """
-        Obtains id(email) and deletes using delete_person.
+        Deletes a person from the database using their _email
         """
-        ret = ppl.delete_person(_id)
-        return {'Message': ret}
+        success = ppl.delete(_email)
+        if not success:
+            return {"Message": "Person not found"}, HTTPStatus.NOT_FOUND
+        return {MESSAGE: 'Person deleted successfully', RETURN: success}
 
+    def put(self, _email):
+        """
+        Updates a person's details in the database using their _email
+        """
+        data = request.get_json()
+        if not data:
+            return {"Message": "Invalid data"}, HTTPStatus.BAD_REQUEST
+        updated_person = ppl.update(_email, data)
+        if updated_person is None:
+            return {"Message": "Person not found"}, HTTPStatus.NOT_FOUND
+        return ({"Message": "Person updated successfully",
+                 "Person": updated_person}, HTTPStatus.OK)
 
 MESSAGE = 'Message'
 RETURN = 'return'
