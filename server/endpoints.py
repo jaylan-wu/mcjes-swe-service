@@ -33,6 +33,10 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
+# Helper Variables
+MESSAGE = 'Message'
+RETURN = 'Return'
+
 
 @api.route(routes.ENDPOINTS)
 class Endpoints(Resource):
@@ -65,6 +69,76 @@ class Journal(Resource):
         }
 
 
+MANU_CREATE_FLDS = api.model('AddNewManuscriptEntry', {
+    manu.TITLE: fields.String,
+    manu.DISPLAY_NAME: fields.String,
+    manu.ABSTRACT: fields.String,
+    manu.TEXT: fields.String,
+    manu.AUTHOR_FIRST: fields.String,
+    manu.AUTHOR_LAST: fields.String,
+    manu.AUTHOR_EMAIL: fields.String,
+})
+
+
+@api.route(routes.MANUSCRIPTS)
+class Manuscripts(Resource):
+    """
+    This class is a resource to manage manuscript-related requests.
+    This is for multiple amounts of manuscripts.
+    """
+    def get(self):
+        """
+        Retrieve all manuscripts
+        """
+        return manu.read()
+
+    @api.response(HTTPStatus.CREATED, 'Manuscript added!')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.expect(MANU_CREATE_FLDS)
+    def post(self):
+        """
+        Add a manuscript to the journal db.
+        """
+        try:
+            title = request.json.get(manu.TITLE)
+            disp_name = request.json.get(manu.DISPLAY_NAME)
+            abstract = request.json.get(manu.ABSTRACT)
+            text = request.json.get(manu.TEXT)
+            author_first = request.json.get(manu.AUTHOR_FIRST)
+            author_last = request.json.get(manu.AUTHOR_LAST)
+            author_email = request.json.get(manu.AUTHOR_EMAIL)
+            manu.create(title, disp_name, abstract, text,
+                        author_first, author_last, author_email)
+            return {MESSAGE: 'Manuscript added!'}, HTTPStatus.CREATED
+        except Exception as err:
+            raise wz.NotAcceptable(f'Could not add manuscript: {err}')
+
+
+@api.route(f'{routes.MANUSCRIPTS}/<_manukey>')
+class Manuscript(Resource):
+    """
+    The purpose of this class is have REST API a single manuscript.
+    """
+    def get(self, _manukey):
+        """
+        Retrieves a manuscript using their unique manuscript key
+        """
+        manuscript = manu.read_one(int(_manukey))
+        print(manuscript)
+        if manuscript is None:
+            return {MESSAGE: "Manuscript Not Found"}, HTTPStatus.NOT_FOUND
+        return {MESSAGE: manuscript}, HTTPStatus.OK
+
+
+PEOPLE_CREATE_FLDS = api.model('AddNewPeopleEntry', {
+    ppl.FIRST_NAME: fields.String,
+    ppl.LAST_NAME: fields.String,
+    ppl.EMAIL: fields.String,
+    ppl.AFFILIATION: fields.String,
+    ppl.ROLES: fields.List(fields.String),
+})
+
+
 @api.route(routes.PEOPLE)
 class People(Resource):
     """
@@ -77,31 +151,51 @@ class People(Resource):
         """
         return ppl.read()
 
+    @api.response(HTTPStatus.CREATED, 'Person Added!')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.expect(PEOPLE_CREATE_FLDS)
+    def post(self):
+        """
+        Add a person to the journal db.
+        """
+        try:
+            first_name = request.json.get(ppl.FIRST_NAME)
+            last_name = request.json.get(ppl.LAST_NAME)
+            affiliation = request.json.get(ppl.AFFILIATION)
+            email = request.json.get(ppl.EMAIL)
+            role = request.json.get(ppl.ROLES)
+            person = ppl.create(first_name, last_name,
+                                affiliation, email, role)
+            return {
+                MESSAGE: 'Person added!',
+                RETURN: person,
+            }, HTTPStatus.CREATED
+        except Exception as err:
+            raise wz.NotAcceptable(f'Could not add person: {err}')
+
 
 @api.route(f'{routes.PEOPLE}/<_email>')
 class Person(Resource):
     """
-    The purpose of this class is have REST API a single person.
+    The purpose of this class is to have REST API a single person.
     """
     def get(self, _email):
         """
         Obtains _email and gets person from database with read_one.
         """
-        ret = ppl.read_one(_email)
-        if ret is None:
-            return {"Message": "Person not found"}, HTTPStatus.NOT_FOUND
-        return {"Message": ret}, HTTPStatus.OK
+        person = ppl.read_one(_email)
+        if person is None:
+            return {"Message": "Person Not Found"}, HTTPStatus.NOT_FOUND
+        return {"Message": person}, HTTPStatus.OK
 
-    @api.response(HTTPStatus.NOT_FOUND, 'Person not found')
-    @api.response(HTTPStatus.NO_CONTENT, 'Person deleted successfully')
     def delete(self, _email):
         """
         Deletes a person from the database using their _email
         """
         success = ppl.delete(_email)
         if not success:
-            return {"Message": "Person not found"}, HTTPStatus.NOT_FOUND
-        return {MESSAGE: 'Person deleted successfully', RETURN: success}
+            return {MESSAGE: "Person not found"}, HTTPStatus.NOT_FOUND
+        return {MESSAGE: 'Person deleted successfully'}, HTTPStatus.OK
 
     def put(self, _email):
         """
@@ -115,47 +209,6 @@ class Person(Resource):
             return {"Message": "Person not found"}, HTTPStatus.NOT_FOUND
         return ({"Message": "Person updated successfully",
                  "Person": updated_person}, HTTPStatus.OK)
-
-
-MESSAGE = 'Message'
-RETURN = 'return'
-
-
-PEOPLE_CREATE_FLDS = api.model('AddNewPeopleEntry', {
-    ppl.FIRST_NAME: fields.String,
-    ppl.LAST_NAME: fields.String,
-    ppl.EMAIL: fields.String,
-    ppl.AFFILIATION: fields.String,
-    ppl.ROLES: fields.List(fields.String),
-})
-
-
-@api.route(f'{routes.PEOPLE}/create')
-class PeopleCreate(Resource):
-    """
-    Add a person to the journal db.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
-    @api.expect(PEOPLE_CREATE_FLDS)
-    def put(self):
-        """
-        Add a person.
-        """
-        try:
-            first_name = request.json.get(ppl.FIRST_NAME)
-            last_name = request.json.get(ppl.LAST_NAME)
-            affiliation = request.json.get(ppl.AFFILIATION)
-            email = request.json.get(ppl.EMAIL)
-            role = request.json.get(ppl.ROLES)
-            ret = ppl.create(first_name, last_name, affiliation, email, role)
-        except Exception as err:
-            raise wz.NotAcceptable(f'Could not add person: '
-                                   f'{err=}')
-        return {
-            MESSAGE: 'Person added!',
-            RETURN: ret,
-        }
 
 
 @api.route(f'{routes.PEOPLE}/masthead')
@@ -180,27 +233,25 @@ class Texts(Resource):
         return txts.read()
 
 
-@api.route(f'{routes.TEXTS}/<_id>')
+@api.route(f'{routes.TEXTS}/<_key>')
 class Text(Resource):
     """
     The purpose of this is to return a single text given a text key
     """
-    def get(self, _id):
+    def get(self, _key):
         """
-        Obtains id(KEY) and get a text from library with read_one.
+        Obtains ey and retrieves a text from library with read_one
         """
-        ret = txts.read_one(_id)
-        return {'Message': ret}
+        text = txts.read_one(_key)
+        if text is None:
+            return {MESSAGE: "Text Not Found"}, HTTPStatus.NOT_FOUND
+        return {MESSAGE: text}, HTTPStatus.OK
 
-
-@api.route(routes.MANUSCRIPTS)
-class Manuscripts(Resource):
-    """
-    This class is a resource to manage manuscript-related requests.
-    This is for multiple amounts of manuscripts.
-    """
-    def get(self):
+    def delete(self, _key):
         """
-        Retrieve all manuscripts
+        Deletes a text from the database using their key
         """
-        return manu.read()
+        success = txts.delete(_key)
+        if not success:
+            return {MESSAGE: "Text not found"}, HTTPStatus.NOT_FOUND
+        return {MESSAGE: 'Text deleted successfully'}, HTTPStatus.OK
