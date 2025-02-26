@@ -221,8 +221,6 @@ class Manuscripts:
         Takes: first_name, last_name, email, affiliation, roles [list]
         '''
         manu_key = len(self.read()) + 1
-        if self.exists(manu_key):
-            raise ValueError(f'Adding duplicate: {manu_key=}')
         if self.is_valid_manuscript(author_email):
             manuscript = {self.MANU_KEY: manu_key, self.TITLE: title,
                           self.DISPLAY_NAME: display_name,

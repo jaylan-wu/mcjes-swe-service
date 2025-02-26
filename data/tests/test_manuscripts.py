@@ -115,3 +115,40 @@ def test_exists():
                 TEST_AUTHOR_EMAIL)
     assert manu.exists(TEST_MANU_KEY)
     manu.delete(TEST_MANU_KEY)
+
+
+def test_is_valid_manuscript():
+    assert manu.is_valid_manuscript('test@example.com') == True
+    with pytest.raises(ValueError, match="Invalid email: test@exa"):
+        manu.is_valid_manuscript('test@exa')
+
+
+def test_create():
+    if manu.exists(TEST_MANU_KEY):
+        manu.delete(TEST_MANU_KEY)
+    manu.create(TEST_TITLE, TEST_DISPLAY_NAME,
+                TEST_ABSTRACT, TEST_TEXT, 
+                TEST_AUTHOR_FIRST, TEST_AUTHOR_LAST,
+                TEST_AUTHOR_EMAIL)
+    with pytest.raises(ValueError, match="Invalid email: test@exa"):
+        manu.create(TEST_TITLE, TEST_DISPLAY_NAME,
+                    TEST_ABSTRACT, TEST_TEXT, 
+                    TEST_AUTHOR_FIRST, TEST_AUTHOR_LAST,
+                    "test@exa")
+    assert manu.exists(TEST_MANU_KEY)
+    manu.delete(TEST_MANU_KEY)
+
+
+@pytest.mark.skip('Needs implementation')
+def test_update():
+    pass
+
+
+@pytest.mark.skip('Needs implementation')
+def test_get_action():
+    pass
+
+
+@pytest.mark.skip('Needs implementation')
+def test_handle_action():
+    pass

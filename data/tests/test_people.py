@@ -55,7 +55,7 @@ def test_is_valid_person(temp_person):
     with pytest.raises(ValueError, match="Invalid email: test@exa"):
         ppl.is_valid_person('test@exa', [TEST_ROLE_CODE])
     with pytest.raises(ValueError, match="Invalid role: NO"):
-        ppl.is_valid_person('test@example.com', ["NO"]) 
+        ppl.is_valid_person('test@example.com', ["NO"])
 
 
 def test_create():
