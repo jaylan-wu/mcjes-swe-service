@@ -139,14 +139,23 @@ def test_create():
     manu.delete(TEST_MANU_KEY)
 
 
-@pytest.mark.skip('Needs implementation')
-def test_update():
-    pass
+def test_update(temp_manuscript):
+    with pytest.raises(ValueError, match="Manuscript with key 2 not found."):
+        manu.update(2, {})
+    with pytest.raises(ValueError, match="Invalid email: test@exa"):
+        manu.update(1, {manu.AUTHOR_EMAIL: "test@exa"})
+    with pytest.raises(ValueError, match="Invalid state: INV_STATE"):
+        manu.update(1, {manu.STATE: "INV_STATE"})
+    updated = manu.update(1, {manu.AUTHOR_EMAIL: "test@test.org"})
+    assert updated[manu.AUTHOR_EMAIL] == "test@test.org"
 
 
-@pytest.mark.skip('Needs implementation')
-def test_get_action():
-    pass
+def test_get_action(temp_manuscript):
+    with pytest.raises(ValueError, match="Manuscript with key 2 not found."):
+        manu.update(2, {})
+    actions = manu.get_actions(1)
+    assert manu_actions.ASSIGN_REF in actions
+    assert manu_actions.REJECT in actions
 
 
 @pytest.mark.skip('Needs implementation')

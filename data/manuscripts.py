@@ -254,25 +254,25 @@ class Manuscripts:
         return dbc.read_one(self.MANUSCRIPTS_COLLECTION,
                             {self.MANU_KEY: manu_key})
 
-    def update(self, manu_key: int, **kwargs):
+    def update(self, manu_key: int, data: dict):
         '''
         Updates an existing manuscript with the provided fields.
         '''
         if not self.exists(manu_key):
             raise ValueError(f'Manuscript with key {manu_key} not found.')
-        if self.AUTHOR_EMAIL in kwargs:
-            if not util.is_valid_email(kwargs[self.AUTHOR_EMAIL]):
-                raise ValueError(f'Invalid email: {kwargs[self.AUTHOR_EMAIL]}')
-        if self.STATE in kwargs:
-            if not self.STATES.is_valid_state(kwargs[self.STATE]):
-                raise ValueError(f'Invalid state: {kwargs[self.STATE]}')
+        if self.AUTHOR_EMAIL in data:
+            if not util.is_valid_email(data[self.AUTHOR_EMAIL]):
+                raise ValueError(f'Invalid email: {data[self.AUTHOR_EMAIL]}')
+        if self.STATE in data:
+            if not self.STATES.is_valid_state(data[self.STATE]):
+                raise ValueError(f'Invalid state: {data[self.STATE]}')
         dbc.update(self.MANUSCRIPTS_COLLECTION,
-                   {self.MANU_KEY: manu_key}, kwargs)
+                   {self.MANU_KEY: manu_key}, data)
         return self.read_one(manu_key)
 
     def get_actions(self, manu_key: int) -> list:
         manuscript = self.read_one(manu_key)
-        if not manuscript:
+        if not self.exists(manu_key):
             raise ValueError(f'Manuscript with key {manu_key} not found.')
         state = manuscript[self.STATE]
         return list(self.STATE_TABLE.get(state, {}).keys())
