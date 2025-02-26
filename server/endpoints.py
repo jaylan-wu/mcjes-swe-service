@@ -220,6 +220,19 @@ class Masthead(Resource):
         return {responses.MASTHEAD: ppl.get_masthead()}
 
 
+@api.route(routes.ROLES)
+class Roles(Resource):
+    """
+    This class is a resource to manage role-related requests.
+    This is for multiple amounts of roles.
+    """
+    def get(self):
+        """
+        Retrieve all roles
+        """
+        return rls.read()
+
+
 @api.route(routes.TEXTS)
 class Texts(Resource):
     """

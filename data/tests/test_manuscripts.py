@@ -65,6 +65,48 @@ def test_common_actions():
     result = action_func()
     assert result == manu.STATES.WITHDRAWN
 
+def test_valid_state_transitions(temp_manuscript):
+    # Submitted -> Assign Reviewer -> Ref Review
+    new_state = manu.STATE_TABLE[manu_states.SUBMITTED][manu_actions.ASSIGN_REF]['f'](manuscript=temp_manuscript, ref='Reviewer1')
+    assert new_state == manu_states.REF_REVIEW
+    
+    # Ref Review -> Accept -> Copy Edit
+    new_state = manu.STATE_TABLE[manu_states.REF_REVIEW][manu_actions.ACCEPT]['f']()
+    assert new_state == manu_states.COPY_EDIT
+    
+    # Ref Review -> Accept with Revision -> Author Revision
+    new_state = manu.STATE_TABLE[manu_states.REF_REVIEW][manu_actions.ACCEPT_W_REV]['f']()
+    assert new_state == manu_states.AUTHOR_REVISION
+    
+    # Author Revision -> Done -> Editor Review
+    new_state = manu.STATE_TABLE[manu_states.AUTHOR_REVISION][manu_actions.DONE]['f']()
+    assert new_state == manu_states.EDITOR_REVIEW
+    
+    # Editor Review -> Accept -> Copy Edit
+    new_state = manu.STATE_TABLE[manu_states.EDITOR_REVIEW][manu_actions.ACCEPT]['f']()
+    assert new_state == manu_states.COPY_EDIT
+    
+    # Copy Edit -> Done -> Author Review
+    new_state = manu.STATE_TABLE[manu_states.COPY_EDIT][manu_actions.DONE]['f']()
+    assert new_state == manu_states.AUTHOR_REVIEW
+    
+    # Author Review -> Done -> Formatting
+    new_state = manu.STATE_TABLE[manu_states.AUTHOR_REVIEW][manu_actions.DONE]['f']()
+    assert new_state == manu_states.FORMATTING
+    
+    # Formatting -> Done -> Published
+    new_state = manu.STATE_TABLE[manu_states.FORMATTING][manu_actions.DONE]['f']()
+    assert new_state == manu_states.PUBLISHED
+    
+    # Submitted -> Reject -> Rejected
+    new_state = manu.STATE_TABLE[manu_states.SUBMITTED][manu_actions.REJECT]['f']()
+    assert new_state == manu_states.REJECTED
+    
+    # Withdrawn -> Common Actions -> Withdrawn
+    new_state = manu.STATE_TABLE[manu_states.SUBMITTED][manu_actions.WITHDRAW]['f']()
+    assert new_state == manu_states.WITHDRAWN
+
+
 def test_exists():
     if not manu.exists(TEST_MANU_KEY):
         manu.delete(TEST_MANU_KEY)
