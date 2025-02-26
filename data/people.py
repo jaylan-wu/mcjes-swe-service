@@ -85,7 +85,7 @@ class People:
             raise ValueError(f'Updating non-existent person: {email=}')
         if self.is_valid_person(email, data[self.ROLES]):
             person = dbc.update(self.PEOPLE_COLLECTION,
-                                {self.EMAIL: email}, dict)
+                                {self.EMAIL: email}, data)
             return person
 
     def has_role(self, person: dict, role: str) -> bool:

@@ -93,13 +93,27 @@ def test_read_one_not_found():
     assert ppl.read_one(TEST_EMAIL) is None
 
 
-@pytest.mark.skip('Skipping: needs to be updated')
 def test_update(temp_person):
     with pytest.raises(ValueError, match="Updating non-existent person: email='john@nyu.edu'"):
-        ppl.update('Jane', 'Doe', 'NYU', TEST_INEXISTENT_EMAIL, [TEST_ROLE_CODE])
+        ppl.update(TEST_INEXISTENT_EMAIL,
+                   {ppl.FIRST_NAME: 'Jane', 
+                    ppl.LAST_NAME: 'Doe', 
+                    ppl.AFFILIATION: 'NYU', 
+                    ppl.EMAIL: TEST_INEXISTENT_EMAIL, 
+                    ppl.ROLES: [TEST_ROLE_CODE] })
     with pytest.raises(ValueError, match="Invalid role: NO"):
-        ppl.update('Jane', 'Doe', 'NYU', TEST_EMAIL, ["NO"])
-    ppl.update('Buffalo', 'Bill', 'UBuffalo', TEST_EMAIL, [TEST_ROLE_CODE])
+        ppl.update(TEST_EMAIL,
+                   {ppl.FIRST_NAME: 'Jane',
+                    ppl.LAST_NAME: 'Doe', 
+                    ppl.AFFILIATION: 'NYU', 
+                    ppl.EMAIL: TEST_EMAIL, 
+                    ppl.ROLES: ['NO'] })
+    ppl.update(TEST_EMAIL,
+               {ppl.FIRST_NAME: 'Buffalo',
+                ppl.LAST_NAME: 'Bill', 
+                ppl.AFFILIATION: 'UBuffalo',
+                ppl.EMAIL: TEST_EMAIL, 
+                ppl.ROLES: [TEST_ROLE_CODE] })
 
 
 def test_has_role(temp_person):

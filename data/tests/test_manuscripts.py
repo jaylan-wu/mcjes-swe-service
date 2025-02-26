@@ -25,7 +25,7 @@ def temp_manuscript():
                              TEST_AUTHOR_EMAIL)
     yield manuscript
     try:
-        manuscript.delete(TEST_MANU_KEY)
+        manu.delete(TEST_MANU_KEY)
     except:
         print('Manuscript already deleted.')
 
@@ -58,3 +58,18 @@ def test_remove_ref(temp_manuscript):
     manu_actions.assign_ref(temp_manuscript, 'Temp Ref 2')
     assert manu_actions.remove_ref(temp_manuscript, 'Temp Ref') == manu.STATES.REF_REVIEW
     assert temp_manuscript[manu.REFEREES] == ['Temp Ref 2']
+
+# Manuscript Tests
+def test_common_actions():
+    action_func = manu.COMMON_ACTIONS[manu.ACTIONS.WITHDRAW][manu.FUNC]
+    result = action_func()
+    assert result == manu.STATES.WITHDRAWN
+
+def test_exists():
+    if not manu.exists(TEST_MANU_KEY):
+        manu.delete(TEST_MANU_KEY)
+    manu.create(TEST_TITLE, TEST_DISPLAY_NAME, TEST_ABSTRACT,
+                TEST_TEXT, TEST_AUTHOR_FIRST, TEST_AUTHOR_LAST,
+                TEST_AUTHOR_EMAIL)
+    assert manu.exists(TEST_MANU_KEY)
+    manu.delete(TEST_MANU_KEY)

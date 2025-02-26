@@ -240,7 +240,7 @@ class Manuscripts:
         Deletes a manuscript given a manu_key
         '''
         return dbc.delete(self.MANUSCRIPTS_COLLECTION,
-                          {self.MANU_KEY, manu_key})
+                          {self.MANU_KEY: manu_key})
 
     def read(self) -> dict:
         '''
