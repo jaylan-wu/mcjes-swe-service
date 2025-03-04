@@ -1,0 +1,41 @@
+[
+  {
+    "manuscript_key": 1,
+    "title": "Understanding AI",
+    "display_name": "AI Research",
+    "abstract": "An abstract about AI",
+    "text": "Full text of the AI manuscript",
+    "author_first_name": "Alice",
+    "author_last_name": "Smith",
+    "author_email": "alice.smith@example.com",
+    "editor": null,
+    "referees": ["Reviewer1", "Reviewer2"],
+    "state": "SUB"
+  },
+  {
+    "manuscript_key": 2,
+    "title": "Quantum Computing Basics",
+    "display_name": "Quantum Journal",
+    "abstract": "Intro to quantum computing",
+    "text": "Quantum computing text",
+    "author_first_name": "Bob",
+    "author_last_name": "Johnson",
+    "author_email": "bob.johnson@example.com",
+    "editor": null,
+    "referees": ["Reviewer3", "Reviewer4"],
+    "state": "SUB"
+  },
+  {
+    "manuscript_key": 3,
+    "title": "Climate Change Effects",
+    "display_name": "Environmental Studies",
+    "abstract": "Abstract on climate change",
+    "text": "Detailed study on climate change",
+    "author_first_name": "Charlie",
+    "author_last_name": "Lee",
+    "author_email": "charlie.lee@example.com",
+    "editor": null,
+    "referees": ["Reviewer5", "Reviewer6"],
+    "state": "SUB"
+  }
+]

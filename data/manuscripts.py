@@ -117,6 +117,8 @@ class Manuscripts:
         self.EDITOR = 'editor'
         self.REFEREES = 'referees'
         self.STATE = 'state'
+        self.ACTION = 'action'
+        self.CURRENT_ACTIONS = 'current_actions'
 
         # State Table
         self.FUNC = 'f'
@@ -229,7 +231,9 @@ class Manuscripts:
                           self.AUTHOR_LAST: author_ln,
                           self.AUTHOR_EMAIL: author_email,
                           self.REFEREES: [], self.EDITOR: None,
-                          self.STATE: self.STATES.SUBMITTED}
+                          self.STATE: self.STATES.SUBMITTED,
+                          self.CURRENT_ACTIONS:
+                          self.get_actions(self.STATES.SUBMITTED,)}
             dbc.create(self.MANUSCRIPTS_COLLECTION, manuscript)
             return manuscript
 
@@ -270,11 +274,7 @@ class Manuscripts:
                    {self.MANU_KEY: manu_key}, data)
         return self.read_one(manu_key)
 
-    def get_actions(self, manu_key: int) -> list:
-        manuscript = self.read_one(manu_key)
-        if not self.exists(manu_key):
-            raise ValueError(f'Manuscript with key {manu_key} not found.')
-        state = manuscript[self.STATE]
+    def get_actions(self, state: str) -> list:
         return list(self.STATE_TABLE.get(state, {}).keys())
 
     def handle_action(self, manu_key: int, action: str) -> str:
@@ -282,8 +282,6 @@ class Manuscripts:
         if not manuscript:
             raise ValueError(f'Manuscript with key {manu_key} not found.')
         state = manuscript[self.STATE]
-        if state not in self.STATE_TABLE:
-            raise ValueError(f'Invalid manuscript state: {state}')
         if action not in self.STATE_TABLE[state]:
             raise ValueError(f'Action "{action}" is not allowed.')
         new_state_func = self.STATE_TABLE[state][action][self.FUNC]
@@ -292,5 +290,7 @@ class Manuscripts:
         else:
             new_state = new_state_func
         dbc.update(self.MANUSCRIPTS_COLLECTION,
-                   {self.MANU_KEY: manu_key}, {self.STATE: new_state})
+                   {self.MANU_KEY: manu_key},
+                   {self.STATE: new_state,
+                    self.CURRENT_ACTIONS: self.get_actions(new_state)})
         return new_state

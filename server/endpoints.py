@@ -77,6 +77,7 @@ MANU_CREATE_FLDS = api.model('AddNewManuscriptEntry', {
     manu.AUTHOR_FIRST: fields.String,
     manu.AUTHOR_LAST: fields.String,
     manu.AUTHOR_EMAIL: fields.String,
+    manu.ACTION: fields.String,
 })
 
 
@@ -128,6 +129,25 @@ class Manuscript(Resource):
         if manuscript is None:
             return {MESSAGE: "Manuscript Not Found"}, HTTPStatus.NOT_FOUND
         return {MESSAGE: manuscript}, HTTPStatus.OK
+
+    @api.response(HTTPStatus.CREATED, 'Manuscript Updated!')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
+    @api.expect(MANU_CREATE_FLDS)
+    def put(self, _manukey):
+        """
+        Updates a manuscript using their unique manuscript key
+        """
+        data = request.get_json()
+        if not data:
+            return {"Message": "Invalid data"}, HTTPStatus.BAD_REQUEST
+        if manu.ACTION in data:
+            return {MESSAGE: manu.handle_action(int(_manukey),
+                                                data[manu.ACTION])}
+        else:
+            updated_manu = ppl.update(int(_manukey), data)
+            if updated_manu is None:
+                return {MESSAGE: "Manuscript not found"}, HTTPStatus.NOT_FOUND
+        return ({MESSAGE: "Manuscript updated successfully"}, HTTPStatus.OK)
 
 
 PEOPLE_CREATE_FLDS = api.model('AddNewPeopleEntry', {
