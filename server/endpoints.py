@@ -143,7 +143,8 @@ class Manuscript(Resource):
         if manu.ACTION in data:
             try:
                 response = manu.handle_action(int(_manukey), data[manu.ACTION])
-                return {MESSAGE: f"Manuscript action executed: {response}"}, HTTPStatus.OK
+                return {{MESSAGE: f"Manuscript action executed: {response}"},
+                        HTTPStatus.OK}
             except ValueError as e:
                 return {MESSAGE: str(e)}, HTTPStatus.BAD_REQUEST
         else:

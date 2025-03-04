@@ -165,6 +165,6 @@ def test_get_action(temp_manuscript):
 def test_handle_action(temp_manuscript):
     with pytest.raises(ValueError, match="Manuscript with key 2 not found."):
         manu.handle_action(2, manu_actions.REJECT)
-    with pytest.raises(ValueError, match=f'Action "{manu_actions.DONE}" is not allowed.'):
+    with pytest.raises(ValueError, match=f'Action {manu_actions.DONE} is not allowed.'):
         manu.handle_action(1, manu_actions.DONE)
     
