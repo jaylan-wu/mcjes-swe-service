@@ -91,7 +91,7 @@ class Manuscripts(Resource):
         """
         Retrieve all manuscripts
         """
-        return manu.read()
+        return {responses.MANUSCRIPTS: manu.read()}
 
     @api.response(HTTPStatus.CREATED, 'Manuscript added!')
     @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
@@ -139,10 +139,13 @@ class Manuscript(Resource):
         """
         data = request.get_json()
         if not data:
-            return {"Message": "Invalid data"}, HTTPStatus.BAD_REQUEST
+            return {MESSAGE: "Invalid data"}, HTTPStatus.BAD_REQUEST
         if manu.ACTION in data:
-            return {MESSAGE: manu.handle_action(int(_manukey),
-                                                data[manu.ACTION])}
+            try:
+                response = manu.handle_action(int(_manukey), data[manu.ACTION])
+                return {MESSAGE: f"Manuscript action executed: {response}"}, HTTPStatus.OK
+            except ValueError as e:
+                return {MESSAGE: str(e)}, HTTPStatus.BAD_REQUEST
         else:
             updated_manu = ppl.update(int(_manukey), data)
             if updated_manu is None:

@@ -32,16 +32,22 @@ ppl = People()
 TEST_CLIENT = ep.app.test_client()
 
 
-def test_endpoints():
+def test_endpoints_get():
     resp = TEST_CLIENT.get(routes.ENDPOINTS)
     resp_json = resp.get_json()
     assert responses.ENDPOINTS in resp_json
 
 
-def test_journal():
+def test_journal_get():
     resp = TEST_CLIENT.get(routes.JOURNAL)
     resp_json = resp.get_json()
     assert responses.JOURNAL in resp_json
+
+
+def test_manuscripts_get():
+    resp = TEST_CLIENT.get(routes.MANUSCRIPTS)
+    resp_json = resp.get_json()
+    assert responses.MANUSCRIPTS in resp_json
 
 
 def test_people():

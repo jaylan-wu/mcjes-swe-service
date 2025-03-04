@@ -283,7 +283,7 @@ class Manuscripts:
             raise ValueError(f'Manuscript with key {manu_key} not found.')
         state = manuscript[self.STATE]
         if action not in self.STATE_TABLE[state]:
-            raise ValueError(f'Action "{action}" is not allowed.')
+            raise ValueError(f'Action {action} is not allowed.')
         new_state_func = self.STATE_TABLE[state][action][self.FUNC]
         if callable(new_state_func):
             new_state = new_state_func(manuscript=manuscript)

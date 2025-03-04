@@ -10,5 +10,6 @@ class Responses:
         self.EDITOR = 'Editor'
         self.ENDPOINTS = 'Available Endpoints'
         self.JOURNAL = 'Journal'
+        self.MANUSCRIPTS = 'Manuscripts'
         self.MASTHEAD = 'Masthead'
         self.TITLE = 'Title'
