@@ -91,7 +91,7 @@ class Manuscripts(Resource):
         """
         Retrieve all manuscripts
         """
-        return {responses.MANUSCRIPTS: manu.read()}
+        return manu.read()
 
     @api.response(HTTPStatus.CREATED, 'Manuscript added!')
     @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
