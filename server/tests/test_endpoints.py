@@ -31,6 +31,9 @@ ppl = People()
 # instantiate the test_client
 TEST_CLIENT = ep.app.test_client()
 
+# Helper Variables
+MESSAGE = 'Message'
+
 
 def test_endpoints_get():
     resp = TEST_CLIENT.get(routes.ENDPOINTS)
@@ -44,14 +47,29 @@ def test_journal_get():
     assert responses.JOURNAL in resp_json
 
 
-@pytest.mark.skip('Skipping because not done.')
 def test_manuscripts_get():
     resp = TEST_CLIENT.get(routes.MANUSCRIPTS)
-    resp_json = resp.get_json()
-    assert responses.MANUSCRIPTS in resp_json
+    assert resp.status_code == 200
 
 
-def test_people():
+@pytest.mark.skip('Skipping because not done.')
+def test_manuscripts_post():
+        manuscript_data = {
+            'title': 'Title',
+            'display_name': 'Display Name',
+            'abstract': 'Abstract',
+            'text': 'Text',
+            'author_first': 'Jane',
+            'author_last': 'Doe',
+            'author_email': 'jane.doe@example.com',
+        }
+        response = TEST_CLIENT.post(routes.MANUSCRIPTS, json=manuscript_data)
+        assert response.status_code == 201
+        assert 'Message' in response.json
+        assert response.json['Message'] == 'Manuscript added!'
+
+
+def test_people_get():
     resp = TEST_CLIENT.get(routes.PEOPLE)
     resp_json = resp.get_json()
     for _id, person in resp_json.items():

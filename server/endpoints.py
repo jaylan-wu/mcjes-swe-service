@@ -125,7 +125,6 @@ class Manuscript(Resource):
         Retrieves a manuscript using their unique manuscript key
         """
         manuscript = manu.read_one(int(_manukey))
-        print(manuscript)
         if manuscript is None:
             return {MESSAGE: "Manuscript Not Found"}, HTTPStatus.NOT_FOUND
         return {MESSAGE: manuscript}, HTTPStatus.OK
