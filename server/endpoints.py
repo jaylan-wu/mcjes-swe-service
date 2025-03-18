@@ -6,6 +6,9 @@ from http import HTTPStatus
 from flask import Flask, request  # type: ignore -> , request
 from flask_restx import Resource, Api, fields   # type: ignore -> Namespace
 from flask_cors import CORS  # type: ignore
+from flask_bcrypt import Bcrypt  # type: ignore
+# from flask_jwt_extended import JWTManager, create_access_token,
+# jwt_required, get_jwt_identity  # type: ignore
 import werkzeug.exceptions as wz  # type: ignore
 
 # import server classes
@@ -32,6 +35,10 @@ manu = Manuscripts()
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
+bcrypt = Bcrypt(app)
+# ----- TODO: JSON WEB TOKEN Manager ----- #
+# app.config['JWT_SECRET_KEY'] = 'your_secret_key'  # Change this in production
+# jwt = JWTManager(app)
 
 # Helper Variables
 MESSAGE = 'Message'
@@ -67,6 +74,56 @@ class Journal(Resource):
             responses.TITLE: 'MCJES',
             responses.EDITOR: 'Max, Cheyenne, Jaylan, Eduardo, & Sadaat',
         }
+
+
+USER_REGISTER_FLDS = api.model('UserRegister', {
+    'email': fields.String(required=True),
+    'password': fields.String(required=True)
+})
+
+
+USER_LOGIN_FLDS = api.model('UserLogin', {
+    'email': fields.String(required=True),
+    'password': fields.String(required=True)
+})
+
+
+@api.route(routes.REGISTER)
+class Register(Resource):
+    """
+    This class is used to register a new user
+    """
+    @api.expect(USER_REGISTER_FLDS)
+    def post(self):
+        """
+        Registers a new user
+        """
+        data = request.get_json()
+        email = data.get('email')
+        # password = data.get('password')
+        if ppl.read_one(email):
+            return {MESSAGE: "User already exists"}, 400
+        # hashed_password = bcrypt.generate_password_hash
+        # (password).decode('utf-8')
+        # TODO: decide whether to use a new user or people
+        # ppl.create_user(email, hashed_password)
+        return {MESSAGE: "User registered successfully"}, 201
+
+
+@api.route(routes.LOGIN)
+class Login(Resource):
+    @api.expect(USER_LOGIN_FLDS)
+    def post(self):
+        """Logs in a user and returns an access token"""
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+        user = ppl.read_one(email)
+        if not user or not bcrypt.check_password_hash(user['password'],
+                                                      password):
+            return {MESSAGE: "Invalid credentials"}, 401
+        # access_token = create_access_token(identity=email)
+        # return {'access_token': access_token}, 200
 
 
 MANU_CREATE_FLDS = api.model('AddNewManuscriptEntry', {
