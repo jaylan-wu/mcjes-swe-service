@@ -153,6 +153,26 @@ class Manuscript(Resource):
         return ({MESSAGE: "Manuscript updated successfully"}, HTTPStatus.OK)
 
 
+@api.route(f'{routes.MANUSCRIPTS}{routes.PEOPLE}/<_email>')
+class ManuscriptByEmail(Resource):
+    """
+    The purpose of this class is to fetch manuscripts under a single email
+    """
+    def get(self, _email):
+        """
+        Retrieves a group of manuscripts using their emails
+        """
+        manu_with_email = []
+        manuscripts = manu.read()
+        for _id, manuscript in manuscripts.items():
+            if manuscript[manu.AUTHOR_EMAIL] == _email:
+                manu_with_email.append(manuscript)
+        if len(manu_with_email) == 0:
+            return {MESSAGE: "No Manuscripts Found"}, HTTPStatus.NOT_FOUND
+        else:
+            return {MESSAGE: manu_with_email}, HTTPStatus.OK
+
+
 PEOPLE_CREATE_FLDS = api.model('AddNewPeopleEntry', {
     ppl.FIRST_NAME: fields.String,
     ppl.LAST_NAME: fields.String,
