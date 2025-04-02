@@ -49,6 +49,7 @@ def convert_mongo_id(doc: dict):
     if MONGO_ID in doc:
         # Convert mongo ID to a string so it works as JSON
         doc[MONGO_ID] = str(doc[MONGO_ID])
+    return doc
 
 
 def create(collection, doc, db=SE_DB):
