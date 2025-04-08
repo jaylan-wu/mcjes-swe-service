@@ -2,6 +2,7 @@ include common.mk
 
 API_DIR = server
 DB_DIR = data
+SEC_DIR = security
 REQ_DIR = .
 
 PYTHONPATH = $(shell pwd)
@@ -18,6 +19,7 @@ github: FORCE
 all_tests: FORCE
 	PYTHONPATH=$(PYTHONPATH) $(MAKE) -C $(API_DIR) tests
 	PYTHONPATH=$(PYTHONPATH) $(MAKE) -C $(DB_DIR) tests
+	PYTHONPATH=$(PYTHONPATH) $(MAKE) -C $(SEC_DIR) tests
 
 dev_env: FORCE
 	pip install -r $(REQ_DIR)/requirements-dev.txt

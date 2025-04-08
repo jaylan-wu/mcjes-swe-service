@@ -5,7 +5,7 @@ We may be required to use a new database at any point.
 """
 import os
 
-import pymongo as pm
+import pymongo as pm  # type: ignore
 
 LOCAL = "0"
 CLOUD = "1"
