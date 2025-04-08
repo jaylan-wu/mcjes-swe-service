@@ -18,8 +18,8 @@ github: FORCE
 
 all_tests: FORCE
 	PYTHONPATH=$(PYTHONPATH) $(MAKE) -C $(API_DIR) tests
-	PYTHONPATH=$(PYTHONPATH) $(MAKE) -C $(DB_DIR) tests
 	PYTHONPATH=$(PYTHONPATH) $(MAKE) -C $(SEC_DIR) tests
+	PYTHONPATH=$(PYTHONPATH) $(MAKE) -C $(DB_DIR) tests
 
 dev_env: FORCE
 	pip install -r $(REQ_DIR)/requirements-dev.txt

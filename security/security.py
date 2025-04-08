@@ -1,4 +1,4 @@
-# from functools import wraps
+from functools import wraps
 
 # Constants
 COLLECT_NAME = 'security'
@@ -14,6 +14,7 @@ LOGIN_KEY = 'login_key'
 # Features (Examples)
 PEOPLE = 'people'
 BAD_FEATURE = 'bad_feature'
+PEOPLE_MISSING_ACTION = READ
 
 # Good test user
 GOOD_USER_ID = 'jw6639@nyu.edu'
@@ -67,3 +68,43 @@ def read() -> dict:
     global security_recs
     security_recs = TEST_RECS
     return security_recs
+
+
+def needs_recs(fn):
+    """Decorator: load security records if not already loaded"""
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        global security_recs
+        if security_recs is None:
+            security_recs = read()
+        return fn(*args, **kwargs)
+    return wrapper
+
+
+@needs_recs
+def read_feature(feature_name: str) -> dict:
+    return security_recs.get(feature_name)
+
+
+@needs_recs
+def is_permitted(feature_name: str, action: str,
+                 user_id: str, **kwargs) -> bool:
+    prot = read_feature(feature_name)
+    if prot is None:
+        return True
+    if action not in prot:
+        return True
+    action_info = prot[action]
+    if USER_LIST in action_info:
+        if user_id not in action_info[USER_LIST]:
+            return False
+    if CHECKS not in action_info:
+        return True
+    for check_name, check_required in action_info[CHECKS].items():
+        if not check_required:
+            continue  # If check isn't required, skip it
+        if check_name not in CHECK_FUNCS:
+            raise ValueError(f'Bad check passed to is_permitted: {check_name}')
+        if not CHECK_FUNCS[check_name](user_id, **kwargs):
+            return False
+    return True
