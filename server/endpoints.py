@@ -21,6 +21,9 @@ from data.roles import Roles
 from data.texts import Texts
 from data.manuscripts import Manuscripts
 
+# import security
+import security.security as sec
+
 # object instances for servers
 routes = Routes()
 responses = Responses()
@@ -288,10 +291,13 @@ class Person(Resource):
             return {"Message": "Person Not Found"}, HTTPStatus.NOT_FOUND
         return {"Message": person}, HTTPStatus.OK
 
-    def delete(self, _email):
+    def delete(self, _email, _user_id):
         """
         Deletes a person from the database using their _email
         """
+        kwargs = {sec.LOGIN_KEY: 'any key for now'}
+        if not sec.is_permitted(sec.PEOPLE, sec.DELETE, _user_id, **kwargs):
+            raise wz.Forbidden('This user does not have authorization.')
         success = ppl.delete(_email)
         if not success:
             return {MESSAGE: "Person not found"}, HTTPStatus.NOT_FOUND
