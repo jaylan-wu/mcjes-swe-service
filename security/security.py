@@ -10,23 +10,46 @@ USER_LIST = 'user_list'
 CHECKS = 'checks'
 LOGIN = 'login'
 LOGIN_KEY = 'login_key'
+IP_ADDR = 'ip_address'
+DUAL_FACTOR = 'dual_factor'
 
 # Features (Examples)
 PEOPLE = 'people'
+TEXTS = 'texts'
 BAD_FEATURE = 'bad_feature'
 PEOPLE_MISSING_ACTION = READ
 
 # Good test user
 GOOD_USER_ID = 'jw6639@nyu.edu'
 
+PEOPLE_CHANGE_PERMISSIONS = {
+    USER_LIST: [GOOD_USER_ID],
+    CHECKS: {
+        LOGIN: True,
+    },
+}
+
 # Simulated DB records
 # TODO: transition these to to DB records
 TEST_RECS = {
     PEOPLE: {
+        CREATE: PEOPLE_CHANGE_PERMISSIONS,
+        DELETE: PEOPLE_CHANGE_PERMISSIONS,
+        UPDATE: PEOPLE_CHANGE_PERMISSIONS,
+    },
+    TEXTS: {
         CREATE: {
             USER_LIST: [GOOD_USER_ID],
             CHECKS: {
                 LOGIN: True,
+            },
+        },
+        DELETE: {
+            USER_LIST: [GOOD_USER_ID],
+            CHECKS: {
+                LOGIN: True,
+                IP_ADDR: True,
+                DUAL_FACTOR: True,
             },
         },
     },
@@ -57,9 +80,22 @@ def check_login(user_id: str, **kwargs):
     return is_valid_key(user_id, kwargs[LOGIN_KEY])
 
 
+def check_ip(user_id: str, **kwargs):
+    if IP_ADDR not in kwargs:
+        return False
+    # we would check user's IP address here
+    return True
+
+
+def dual_factor(user_id: str, **kwargs):
+    return True
+
+
 CHECK_FUNCS = {
     LOGIN: check_login,
     # Future: add more checks here
+    IP_ADDR: check_ip,
+    DUAL_FACTOR: dual_factor,
 }
 
 
