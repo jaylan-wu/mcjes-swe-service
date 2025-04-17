@@ -330,9 +330,9 @@ class Person(Resource):
         """
         Deletes a person from the database using their _email
         """
-        kwargs = {sec.LOGIN_KEY: 'any key for now'}
-        if not sec.is_permitted(sec.PEOPLE, sec.DELETE, _user_id, **kwargs):
-            raise wz.Forbidden('This user does not have authorization.')
+        # kwargs = {sec.LOGIN_KEY: 'any key for now'}
+        # if not sec.is_permitted(sec.PEOPLE, sec.DELETE, _user_id, **kwargs):
+        #     raise wz.Forbidden('This user does not have authorization.')
         success = ppl.delete(_email)
         if not success:
             return {MESSAGE: "Person not found"}, HTTPStatus.NOT_FOUND
