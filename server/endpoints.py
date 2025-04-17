@@ -24,7 +24,7 @@ from data.texts import Texts
 from data.manuscripts import Manuscripts
 
 # import security
-import security.security as sec
+# import security.security as sec
 
 # object instances for servers
 routes = Routes()
