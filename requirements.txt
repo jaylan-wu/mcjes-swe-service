@@ -7,3 +7,4 @@ flask_cors
 pymongo
 werkzeug==3.0.4
 mongomock
+requests
