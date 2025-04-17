@@ -6,6 +6,7 @@ of our possible API endpoints
 
 class Routes:
     def __init__(self):
+        self.DEVELOPER = '/dev'
         self.ENDPOINTS = '/endpoints'
         self.JOURNAL = '/journal'
         self.PEOPLE = '/people'

@@ -3,13 +3,14 @@ This file contains all of the endpoints for our flask app.
 """
 from http import HTTPStatus
 
-from flask import Flask, request  # type: ignore -> , request
+from flask import Flask, make_response, request  # type: ignore
 from flask_restx import Resource, Api, fields   # type: ignore -> Namespace
 from flask_cors import CORS  # type: ignore
 from flask_bcrypt import Bcrypt  # type: ignore
 # from flask_jwt_extended import JWTManager, create_access_token,
 # jwt_required, get_jwt_identity  # type: ignore
 import werkzeug.exceptions as wz  # type: ignore
+import os
 
 # import server classes
 from server.routes import Routes
@@ -77,6 +78,29 @@ class Journal(Resource):
             responses.TITLE: 'MCJES',
             responses.EDITOR: 'Max, Cheyenne, Jaylan, Eduardo, & Sadaat',
         }
+
+
+@api.route(f'{routes.DEVELOPER}/logs')
+class ErrorLog(Resource):
+    """
+    Developer tool to fetch the application error log from PythonAnywhere.
+    """
+    def get(self):
+        """
+        Retrieves error log from PythonAnywhere
+        """
+        path = os.path.expanduser("~/jaylanwu.pythonanywhere.com.error.log")
+
+        try:
+            with open(path, "r") as log_file:
+                log_content = log_file.read()
+                response = make_response(log_content, HTTPStatus.OK)
+                response.mimetype = "text/plain"
+                return response
+        except FileNotFoundError:
+            return {"error": "Log file not found"}, HTTPStatus.NOT_FOUND
+        except Exception as e:
+            return {"error": str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 USER_REGISTER_FLDS = api.model('UserRegister', {
