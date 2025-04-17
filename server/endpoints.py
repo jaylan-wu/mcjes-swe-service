@@ -326,7 +326,7 @@ class Person(Resource):
             return {"Message": "Person Not Found"}, HTTPStatus.NOT_FOUND
         return {"Message": person}, HTTPStatus.OK
 
-    def delete(self, _email, _user_id):
+    def delete(self, _email):
         """
         Deletes a person from the database using their _email
         """
