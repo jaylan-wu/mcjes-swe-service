@@ -8,9 +8,11 @@ class Routes:
     def __init__(self):
         self.DEVELOPER = '/dev'
         self.ENDPOINTS = '/endpoints'
+        self.ERROR = '/error'
         self.JOURNAL = '/journal'
         self.PEOPLE = '/people'
         self.LOGIN = '/login'
+        self.LOGS = '/logs'
         self.MANUSCRIPTS = '/manuscripts'
         self.MASTHEAD = '/masthead'
         self.REGISTER = '/register'

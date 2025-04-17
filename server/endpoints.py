@@ -3,14 +3,15 @@ This file contains all of the endpoints for our flask app.
 """
 from http import HTTPStatus
 
-from flask import Flask, make_response, request  # type: ignore
+from flask import Flask, request  # type: ignore
 from flask_restx import Resource, Api, fields   # type: ignore -> Namespace
 from flask_cors import CORS  # type: ignore
 from flask_bcrypt import Bcrypt  # type: ignore
 # from flask_jwt_extended import JWTManager, create_access_token,
 # jwt_required, get_jwt_identity  # type: ignore
 import werkzeug.exceptions as wz  # type: ignore
-import os
+import requests  # type: ignore
+import re  # type: ignore
 
 # import server classes
 from server.routes import Routes
@@ -80,27 +81,37 @@ class Journal(Resource):
         }
 
 
-@api.route(f'{routes.DEVELOPER}/logs')
+@api.route(f'{routes.DEVELOPER}{routes.LOGS}{routes.ERROR}/<_username>')
 class ErrorLog(Resource):
     """
     Developer tool to fetch the application error log from PythonAnywhere.
     """
-    def get(self):
+    def get(self, _username):
         """
-        Retrieves error log from PythonAnywhere
+        Retrieves error log from the PythonAnywhere server file system.
         """
-        path = os.path.expanduser("~/jaylanwu.pythonanywhere.com.error.log")
+        token = 'b8d7afc890b6e0462c12f3d1f27bf2fb0bac0921'
 
-        try:
-            with open(path, "r") as log_file:
-                log_content = log_file.read()
-                response = make_response(log_content, HTTPStatus.OK)
-                response.mimetype = "text/plain"
-                return response
-        except FileNotFoundError:
-            return {"error": "Log file not found"}, HTTPStatus.NOT_FOUND
-        except Exception as e:
-            return {"error": str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
+        log_path = f'/var/log/{_username}.pythonanywhere.com.error.log'
+        url = 'https://www.pythonanywhere.com/api/v0/user/' + \
+            f'{_username}/files/path{log_path}'
+
+        headers = {
+            'Authorization': f'Token {token}'
+        }
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            split_logs = re.split(r'(?=\d{4}-\d{2}-\d{2})', response.text)
+            log_entries = [entry.strip() for entry
+                           in split_logs if entry.strip()]
+            return {'ErrorLog': log_entries[:20]}, HTTPStatus.OK
+        else:
+            return {
+                'error': f"Error {response.status_code}",
+                'details': response.content.decode('utf-8')
+            }, response.status_code
 
 
 USER_REGISTER_FLDS = api.model('UserRegister', {
