@@ -8,6 +8,7 @@ from flask_restx import Resource, Api, fields   # type: ignore -> Namespace
 from flask_cors import CORS  # type: ignore
 from flask_bcrypt import Bcrypt  # type: ignore
 from flask_jwt_extended import JWTManager, create_access_token  # type: ignore
+from flask_jwt_extended import jwt_required, get_jwt_identity  # type: ignore
 from werkzeug.security import generate_password_hash  # type: ignore
 from werkzeug.security import check_password_hash  # type: ignore
 import werkzeug.exceptions as wz  # type: ignore
@@ -397,14 +398,42 @@ class Texts(Resource):
         return txts.read()
 
 
+TEXT_CREATE_FLDS = api.model('AddNewTextEntry', {
+    txts.KEY: fields.String,
+    txts.TITLE: fields.String,
+    txts.TEXT: fields.String,
+})
+
+
 @api.route(f'{routes.TEXTS}/<_key>')
 class Text(Resource):
     """
-    The purpose of this is to return a single text given a text key
+    This class is a resource to manage text-related requests.
+    This is for a single text.
     """
+    @api.expect(TEXT_CREATE_FLDS)
+    @jwt_required()
+    def post(self):
+        """
+        Add a text to the journal db.
+        """
+        user_email = get_jwt_identity()
+        print(user_email)
+        try:
+            key = request.json.get(txts.KEY)
+            title = request.json.get(txts.TITLE)
+            content = request.json.get(txts.TEXT)
+            text = txts.create(key, title, content)
+            return {
+                MESSAGE: 'Text added!',
+                RETURN: text,
+            }, HTTPStatus.CREATED
+        except Exception as err:
+            raise wz.NotAcceptable(f'Could not add text: {err}')
+
     def get(self, _key):
         """
-        Obtains ey and retrieves a text from library with read_one
+        Obtains a key and retrieves a text from library with read_one
         """
         text = txts.read_one(_key)
         if text is None:

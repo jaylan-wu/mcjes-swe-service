@@ -124,7 +124,7 @@ def test_has_role(temp_person):
 
 
 def test_get_masthead(temp_person):
-    ppl.create('Jane', 'Doe', TEST_INEXISTENT_EMAIL, TEST_PW, 'NYU', ['CE'])
+    ppl.create('Jane', 'Doe', 'mast@head.com', TEST_PW, 'NYU', ['CE'])
     mh = ppl.get_masthead()
     assert isinstance(mh, dict)
-    ppl.delete('jane@nyu.edu')
+    ppl.delete('mast@head.com')
