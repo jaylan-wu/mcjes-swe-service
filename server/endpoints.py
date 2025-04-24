@@ -168,14 +168,14 @@ class Login(Resource):
         if check_password_hash(user[ppl.PASSWORD], password):
             access_token = create_access_token(identity=email)
             return {
-            'access_token': access_token,
-            'user': {
-                'first_name': user[ppl.FIRST_NAME],
-                'last_name': user[ppl.LAST_NAME],
-                'email': user[ppl.EMAIL],
-                'affiliation': user[ppl.AFFILIATION],
-                #'role': user.get(ppl.ROLES, ['Viewer'])[0]  # optional
-                }
+                'access_token': access_token,
+                'user': {
+                    'first_name': user[ppl.FIRST_NAME],
+                    'last_name': user[ppl.LAST_NAME],
+                    'email': user[ppl.EMAIL],
+                    'affiliation': user[ppl.AFFILIATION],
+                    # 'role': user.get(ppl.ROLES, ['Viewer'])[0]  optional
+                    }
             }, 200
         else:
             return {MESSAGE: "Wrong Password"}, 401
