@@ -12,6 +12,7 @@ util = Utilities()
 # Test Variables
 TEST_EMAIL = 'janedoe@nyu.edu'
 TEST_INEXISTENT_EMAIL = 'john@nyu.edu'
+TEST_PW = 'password'
 TEST_ROLE_CODE = 'AU'
 
 test_roles = [
@@ -26,7 +27,8 @@ test_roles = [
 def temp_person():
     for role_code, role, is_masthead in test_roles:
         rls.create(role_code, role, is_masthead)
-    person = ppl.create('Jane', 'Doe', 'NYU', TEST_EMAIL, [TEST_ROLE_CODE])
+    person = ppl.create('Jane', 'Doe', TEST_EMAIL, TEST_PW,
+                        'NYU', [TEST_ROLE_CODE])
     yield person
     try:
         ppl.delete(person)
@@ -41,9 +43,9 @@ def test_exists():
         rls.create(role_code, role, is_masthead)
     if not ppl.exists(TEST_EMAIL):
         ppl.delete(TEST_EMAIL)
-    ppl.create('Jane', 'Doe', 'NYU', TEST_EMAIL, [TEST_ROLE_CODE])
+    ppl.create('Jane', 'Doe', TEST_EMAIL, TEST_PW, 'NYU', [TEST_ROLE_CODE])
     with pytest.raises(ValueError, match="Adding duplicate: email='janedoe@nyu.edu'"):
-        ppl.create('Jane', 'Doe', 'NYU', TEST_EMAIL, [TEST_ROLE_CODE])
+        ppl.create('Jane', 'Doe', TEST_EMAIL, TEST_PW, 'NYU', [TEST_ROLE_CODE])
     assert ppl.exists(TEST_EMAIL)
     ppl.delete(TEST_EMAIL)
     for role_code, role, is_masthead in test_roles:
@@ -63,13 +65,13 @@ def test_create():
         rls.create(role_code, role, is_masthead)
     if ppl.exists(TEST_EMAIL):
         ppl.delete(TEST_EMAIL)
-    ppl.create('Jane', 'Doe', 'NYU', TEST_EMAIL, [TEST_ROLE_CODE])
+    ppl.create('Jane', 'Doe', TEST_EMAIL, TEST_PW, 'NYU', [TEST_ROLE_CODE])
     with pytest.raises(ValueError, match="Adding duplicate: email='janedoe@nyu.edu'"):
-        ppl.create('Jane', 'Doe', 'NYU', TEST_EMAIL, [TEST_ROLE_CODE])
+        ppl.create('Jane', 'Doe', TEST_EMAIL, TEST_PW, 'NYU', [TEST_ROLE_CODE])
     with pytest.raises(ValueError, match="Invalid email: test@exa"):
-        ppl.create('Jane', 'Doe', 'NYU', 'test@exa', [TEST_ROLE_CODE])
+        ppl.create('Jane', 'Doe', 'test@exa', TEST_PW, 'NYU', [TEST_ROLE_CODE])
     with pytest.raises(ValueError, match="Invalid role: NO"):
-        ppl.create('Jane', 'Doe', 'NYU', 'test@nyu.edu', ["NO"])
+        ppl.create('Jane', 'Doe', 'janeoe@nyu.edu', TEST_PW, 'NYU', ['NO'])
     assert ppl.exists(TEST_EMAIL)
     ppl.delete(TEST_EMAIL)
     for role_code, role, is_masthead in test_roles:
@@ -122,7 +124,7 @@ def test_has_role(temp_person):
 
 
 def test_get_masthead(temp_person):
-    ppl.create('Jane', 'Doe', 'NYU', "jane@nyu.edu", ['CE'])
+    ppl.create('Jane', 'Doe', TEST_INEXISTENT_EMAIL, TEST_PW, 'NYU', ['CE'])
     mh = ppl.get_masthead()
     assert isinstance(mh, dict)
     ppl.delete('jane@nyu.edu')

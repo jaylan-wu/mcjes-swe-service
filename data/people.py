@@ -22,6 +22,7 @@ class People:
         self.LAST_NAME = 'last_name'
         self.AFFILIATION = 'affiliation'
         self.EMAIL = 'email'
+        self.PASSWORD = 'password'
         self.ROLES = 'roles'
 
     def exists(self, email: str) -> bool:
@@ -43,7 +44,8 @@ class People:
         return True
 
     def create(self, first_name: str, last_name: str,
-               affiliation: str, email: str, roles: list):
+               email: str, password: str,
+               affiliation: str, roles: list):
         """
         Creates a new instance of a person if email doesn't exist.
         Takes: first_name, last_name, email, affiliation, roles [list]
@@ -52,8 +54,8 @@ class People:
             raise ValueError(f'Adding duplicate: {email=}')
         if self.is_valid_person(email, roles):
             person = {self.FIRST_NAME: first_name, self.LAST_NAME: last_name,
-                      self.AFFILIATION: affiliation, self.EMAIL: email,
-                      self.ROLES: roles}
+                      self.EMAIL: email, self.PASSWORD: password,
+                      self.AFFILIATION: affiliation, self.ROLES: roles}
             dbc.create(self.PEOPLE_COLLECTION, person)
             return email
 

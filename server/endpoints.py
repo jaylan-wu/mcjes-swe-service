@@ -7,8 +7,9 @@ from flask import Flask, request  # type: ignore
 from flask_restx import Resource, Api, fields   # type: ignore -> Namespace
 from flask_cors import CORS  # type: ignore
 from flask_bcrypt import Bcrypt  # type: ignore
-# from flask_jwt_extended import JWTManager, create_access_token,
-# jwt_required, get_jwt_identity  # type: ignore
+from flask_jwt_extended import JWTManager, create_access_token  # type: ignore
+from werkzeug.security import generate_password_hash  # type: ignore
+from werkzeug.security import check_password_hash  # type: ignore
 import werkzeug.exceptions as wz  # type: ignore
 import requests  # type: ignore
 import re  # type: ignore
@@ -41,9 +42,8 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 bcrypt = Bcrypt(app)
-# ----- TODO: JSON WEB TOKEN Manager ----- #
-# app.config['JWT_SECRET_KEY'] = 'your_secret_key'  # Change this in production
-# jwt = JWTManager(app)
+app.config['JWT_SECRET_KEY'] = 'mcjes_jwt'
+jwt = JWTManager(app)
 
 # Helper Variables
 MESSAGE = 'Message'
@@ -115,8 +115,11 @@ class ErrorLog(Resource):
 
 
 USER_REGISTER_FLDS = api.model('UserRegister', {
-    'email': fields.String(required=True),
-    'password': fields.String(required=True)
+    ppl.FIRST_NAME: fields.String(required=True),
+    ppl.LAST_NAME: fields.String(required=True),
+    ppl.EMAIL: fields.String(required=True),
+    ppl.PASSWORD: fields.String(required=True),
+    ppl.AFFILIATION: fields.String(required=True),
 })
 
 
@@ -137,14 +140,16 @@ class Register(Resource):
         Registers a new user
         """
         data = request.get_json()
-        email = data.get('email')
-        # password = data.get('password')
+        first_name = data.get(ppl.FIRST_NAME)
+        last_name = data.get(ppl.LAST_NAME)
+        email = data.get(ppl.EMAIL)
+        password = data.get(ppl.PASSWORD)
+        affiliation = data.get(ppl.AFFILIATION)
         if ppl.read_one(email):
             return {MESSAGE: "User already exists"}, 400
-        # hashed_password = bcrypt.generate_password_hash
-        # (password).decode('utf-8')
-        # TODO: decide whether to use a new user or people
-        # ppl.create_user(email, hashed_password)
+        password_hash = generate_password_hash(password)
+        ppl.create(first_name, last_name, email, password_hash,
+                   affiliation, ['AU'])
         return {MESSAGE: "User registered successfully"}, 201
 
 
@@ -154,14 +159,16 @@ class Login(Resource):
     def post(self):
         """Logs in a user and returns an access token"""
         data = request.get_json()
-        email = data.get('email')
-        password = data.get('password')
+        email = data.get(ppl.EMAIL)
+        password = data.get(ppl.PASSWORD)
         user = ppl.read_one(email)
-        if not user or not bcrypt.check_password_hash(user['password'],
-                                                      password):
-            return {MESSAGE: "Invalid credentials"}, 401
-        # access_token = create_access_token(identity=email)
-        # return {'access_token': access_token}, 200
+        if not user:
+            return {MESSAGE: "User does not exists"}, 401
+        if check_password_hash(user[ppl.PASSWORD], password):
+            access_token = create_access_token(identity=email)
+            return {'access_token': access_token}, 200
+        else:
+            return {MESSAGE: "Wrong Password"}, 401
 
 
 MANU_CREATE_FLDS = api.model('AddNewManuscriptEntry', {
@@ -272,6 +279,7 @@ PEOPLE_CREATE_FLDS = api.model('AddNewPeopleEntry', {
     ppl.FIRST_NAME: fields.String,
     ppl.LAST_NAME: fields.String,
     ppl.EMAIL: fields.String,
+    ppl.PASSWORD: fields.String,
     ppl.AFFILIATION: fields.String,
     ppl.ROLES: fields.List(fields.String),
 })
@@ -301,9 +309,11 @@ class People(Resource):
             last_name = request.json.get(ppl.LAST_NAME)
             affiliation = request.json.get(ppl.AFFILIATION)
             email = request.json.get(ppl.EMAIL)
+            password = request.json.get(ppl.PASSWORD)
             role = request.json.get(ppl.ROLES)
             person = ppl.create(first_name, last_name,
-                                affiliation, email, role)
+                                email, password,
+                                affiliation, role)
             return {
                 MESSAGE: 'Person added!',
                 RETURN: person,
