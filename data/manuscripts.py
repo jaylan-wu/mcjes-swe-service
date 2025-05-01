@@ -17,16 +17,16 @@ class ManuscriptStates:
     '''
     def __init__(self):
         # Instance Variables for Manuscript States
-        self.AUTHOR_REVIEW = 'AUR'
-        self.AUTHOR_REVISION = 'ARV'
-        self.COPY_EDIT = 'CED'
-        self.EDITOR_REVIEW = 'EDR'
-        self.FORMATTING = 'FOR'
-        self.PUBLISHED = 'PUB'
-        self.REF_REVIEW = 'REF'
-        self.REJECTED = 'REJ'
-        self.SUBMITTED = 'SUB'
-        self.WITHDRAWN = 'WIT'
+        self.AUTHOR_REVIEW = 'Author Review'
+        self.AUTHOR_REVISION = 'Author Revision'
+        self.COPY_EDIT = 'Copy Edit'
+        self.EDITOR_REVIEW = 'Editor Review'
+        self.FORMATTING = 'Formatting'
+        self.PUBLISHED = 'Published'
+        self.REF_REVIEW = 'Referee Review'
+        self.REJECTED = 'Rejected'
+        self.SUBMITTED = 'Submitted'
+        self.WITHDRAWN = 'Withdrawn'
 
         self.VALID_STATES = [
             self.AUTHOR_REVIEW,
@@ -56,14 +56,14 @@ class ManuscriptActions:
     '''
     def __init__(self):
         # Instance Variables for Manuscript States
-        self.ACCEPT = 'ACC'
-        self.ACCEPT_W_REV = 'ACR'
-        self.ASSIGN_REF = 'ARF'
-        self.REMOVE_REF = 'DRF'
-        self.SUBMIT_REV = 'SUB'
-        self.DONE = 'DON'
-        self.REJECT = 'REJ'
-        self.WITHDRAW = 'WIT'
+        self.ACCEPT = 'Accept'
+        self.ACCEPT_W_REV = 'Accept with Revisions'
+        self.ASSIGN_REF = 'Assign Referee'
+        self.REMOVE_REF = 'Remove Referee'
+        self.SUBMIT_REV = 'Submit Revisions'
+        self.DONE = 'Done'
+        self.REJECT = 'Rejected'
+        self.WITHDRAW = 'Withdrawn'
 
         self.VALID_ACTIONS = [
             self.ACCEPT,

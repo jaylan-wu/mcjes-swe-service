@@ -264,6 +264,15 @@ class Manuscript(Resource):
                 return {MESSAGE: "Manuscript not found"}, HTTPStatus.NOT_FOUND
         return ({MESSAGE: "Manuscript updated successfully"}, HTTPStatus.OK)
 
+    def delete(self, _manukey):
+        """
+        Deletes a manuscript from the database using their manu_key
+        """
+        success = manu.delete(_manukey)
+        if not success:
+            return {MESSAGE: "Manuscript not found"}, HTTPStatus.NOT_FOUND
+        return {MESSAGE: 'Manuscript deleted successfully'}, HTTPStatus.OK
+
 
 @api.route(f'{routes.MANUSCRIPTS}{routes.PEOPLE}/<_email>')
 class ManuscriptByEmail(Resource):
