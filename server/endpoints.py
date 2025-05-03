@@ -259,7 +259,7 @@ class Manuscript(Resource):
             except ValueError as e:
                 return {MESSAGE: str(e)}, HTTPStatus.BAD_REQUEST
         else:
-            updated_manu = ppl.update(int(_manukey), data)
+            updated_manu = manu.update(int(_manukey), data)
             if updated_manu is None:
                 return {MESSAGE: "Manuscript not found"}, HTTPStatus.NOT_FOUND
         return ({MESSAGE: "Manuscript updated successfully"}, HTTPStatus.OK)
@@ -403,6 +403,13 @@ class Roles(Resource):
         return rls.read()
 
 
+TEXT_CREATE_FLDS = api.model('AddNewTextEntry', {
+    txts.KEY: fields.String,
+    txts.TITLE: fields.String,
+    txts.TEXT: fields.String,
+})
+
+
 @api.route(routes.TEXTS)
 class Texts(Resource):
     """
@@ -415,28 +422,11 @@ class Texts(Resource):
         """
         return txts.read()
 
-
-TEXT_CREATE_FLDS = api.model('AddNewTextEntry', {
-    txts.KEY: fields.String,
-    txts.TITLE: fields.String,
-    txts.TEXT: fields.String,
-})
-
-
-@api.route(f'{routes.TEXTS}/<_key>')
-class Text(Resource):
-    """
-    This class is a resource to manage text-related requests.
-    This is for a single text.
-    """
     @api.expect(TEXT_CREATE_FLDS)
-    @jwt_required()
     def post(self):
         """
         Add a text to the journal db.
         """
-        user_email = get_jwt_identity()
-        print(user_email)
         try:
             key = request.json.get(txts.KEY)
             title = request.json.get(txts.TITLE)
@@ -448,6 +438,14 @@ class Text(Resource):
             }, HTTPStatus.CREATED
         except Exception as err:
             raise wz.NotAcceptable(f'Could not add text: {err}')
+
+
+@api.route(f'{routes.TEXTS}/<_key>')
+class Text(Resource):
+    """
+    This class is a resource to manage text-related requests.
+    This is for a single text.
+    """
 
     def get(self, _key):
         """
@@ -466,3 +464,19 @@ class Text(Resource):
         if not success:
             return {MESSAGE: "Text not found"}, HTTPStatus.NOT_FOUND
         return {MESSAGE: 'Text deleted successfully'}, HTTPStatus.OK
+
+    @api.expect(TEXT_CREATE_FLDS)
+    def put(self, _key):
+        """
+        Updates a text's details in the database using their _key
+        """
+        data = request.get_json()
+        title = data.get(txts.TITLE)
+        content = data.get(txts.TEXT)
+        if not data:
+            return {"Message": "Invalid data"}, HTTPStatus.BAD_REQUEST
+        updated_text = txts.update(_key, title, content)
+        if updated_text is None:
+            return {"Message": "Text not found"}, HTTPStatus.NOT_FOUND
+        return ({"Message": "Text updated successfully",
+                 "Person": updated_text}, HTTPStatus.OK)
