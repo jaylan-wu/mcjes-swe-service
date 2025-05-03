@@ -274,6 +274,30 @@ class Manuscript(Resource):
         return {MESSAGE: 'Manuscript deleted successfully'}, HTTPStatus.OK
 
 
+MANU_ACTION_FLDS = api.model('ManuscriptActionEntry', {
+    manu.ACTION: fields.String,
+})
+
+
+@api.route(f'{routes.MANUSCRIPTS}{routes.ACTION}/<_manukey>')
+class ManuscriptAction(Resource):
+    """
+    The purpose of this class is to submit a manuscript action
+    """
+    @api.expect(MANU_CREATE_FLDS)
+    def put(self, _manukey):
+        """
+        Updates a manuscript state through its action
+        """
+        data = request.get_json()
+        try:
+            response = manu.handle_action(int(_manukey), data[manu.ACTION])
+            return {{MESSAGE: f"Manuscript action executed: {response}"},
+                    HTTPStatus.OK}
+        except ValueError as e:
+            return {MESSAGE: str(e)}, HTTPStatus.BAD_REQUEST
+
+
 @api.route(f'{routes.MANUSCRIPTS}{routes.PEOPLE}/<_email>')
 class ManuscriptByEmail(Resource):
     """

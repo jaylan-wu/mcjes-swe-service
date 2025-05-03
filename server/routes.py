@@ -6,6 +6,7 @@ of our possible API endpoints
 
 class Routes:
     def __init__(self):
+        self.ACTION = '/action'
         self.DEVELOPER = '/dev'
         self.ENDPOINTS = '/endpoints'
         self.ERROR = '/error'
