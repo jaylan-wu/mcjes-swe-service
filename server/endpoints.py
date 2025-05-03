@@ -8,7 +8,7 @@ from flask_restx import Resource, Api, fields   # type: ignore -> Namespace
 from flask_cors import CORS  # type: ignore
 from flask_bcrypt import Bcrypt  # type: ignore
 from flask_jwt_extended import JWTManager, create_access_token  # type: ignore
-from flask_jwt_extended import jwt_required, get_jwt_identity  # type: ignore
+# from flask_jwt_extended import jwt_required, get_jwt_identity  # type: ignore
 from werkzeug.security import generate_password_hash  # type: ignore
 from werkzeug.security import check_password_hash  # type: ignore
 import werkzeug.exceptions as wz  # type: ignore
