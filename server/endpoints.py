@@ -121,6 +121,7 @@ USER_REGISTER_FLDS = api.model('UserRegister', {
     ppl.EMAIL: fields.String(required=True),
     ppl.PASSWORD: fields.String(required=True),
     ppl.AFFILIATION: fields.String(required=True),
+    ppl.ROLES: fields.List(fields.String(required=True)),
 })
 
 
@@ -145,12 +146,13 @@ class Register(Resource):
         last_name = data.get(ppl.LAST_NAME)
         email = data.get(ppl.EMAIL)
         password = data.get(ppl.PASSWORD)
-        affiliation = data.get(ppl.AFFILIATION)
+        # affiliation = data.get(ppl.AFFILIATION)
+        roles = data.get(ppl.ROLES)
         if ppl.read_one(email):
             return {MESSAGE: "User already exists"}, 400
         password_hash = generate_password_hash(password)
         ppl.create(first_name, last_name, email, password_hash,
-                   affiliation, ['AU'])
+                   None, roles)
         return {MESSAGE: "User registered successfully"}, 201
 
 
@@ -173,8 +175,8 @@ class Login(Resource):
                     'first_name': user[ppl.FIRST_NAME],
                     'last_name': user[ppl.LAST_NAME],
                     'email': user[ppl.EMAIL],
-                    'affiliation': user[ppl.AFFILIATION],
-                    # 'role': user.get(ppl.ROLES, ['Viewer'])[0]  optional
+                    # 'affiliation': user[ppl.AFFILIATION],
+                    'role': user.get(ppl.ROLES, ['Viewer'])[0]
                     }
             }, 200
         else:
