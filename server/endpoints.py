@@ -152,7 +152,7 @@ class Register(Resource):
             return {MESSAGE: "User already exists"}, 400
         password_hash = generate_password_hash(password)
         ppl.create(first_name, last_name, email, password_hash,
-                   None, roles)
+                   "NYU", roles)
         return {MESSAGE: "User registered successfully"}, 201
 
 
