@@ -141,34 +141,19 @@ class Register(Resource):
         """
         Registers a new user
         """
-        try:
-            data = request.get_json()
-            first_name = data.get(ppl.FIRST_NAME)
-            last_name = data.get(ppl.LAST_NAME)
-            email = data.get(ppl.EMAIL)
-            password = data.get(ppl.PASSWORD)
-            # affiliation = data.get(ppl.AFFILIATION)
-            roles = data.get(ppl.ROLES)
-            if not roles:
-                return {MESSAGE: "Missing roles"}, 400
-            if not first_name or not last_name:
-                return {MESSAGE: "Missing first or last name"}, 400
-            if not email:
-                return {MESSAGE: "No email address"}, 400
-            if not password:
-                return {MESSAGE: "No Password"}, 400
-            if not all([first_name, last_name, email, password, roles]):
-                return {MESSAGE: "Missing required fields"}, 400
-            if ppl.read_one(email):
-                return {MESSAGE: "User already exists"}, 400
-            password_hash = generate_password_hash(password)
-            ppl.create(first_name, last_name, email, password_hash,
-                       "NYU", roles)
-            return {MESSAGE: "User registered successfully"}, 201
-
-        except Exception as e:
-            print("Registration Error:", str(e))  # Log this
-            return {MESSAGE: "Internal Server Error", "error": str(e)}, 500
+        data = request.get_json()
+        first_name = data.get(ppl.FIRST_NAME)
+        last_name = data.get(ppl.LAST_NAME)
+        email = data.get(ppl.EMAIL)
+        password = data.get(ppl.PASSWORD)
+        # affiliation = data.get(ppl.AFFILIATION)
+        roles = data.get(ppl.ROLES)
+        if ppl.read_one(email):
+            return {MESSAGE: "User already exists"}, 400
+        password_hash = generate_password_hash(password)
+        ppl.create(first_name, last_name, email, password_hash,
+                   "NYU", roles)
+        return {MESSAGE: "User registered successfully"}, 201
 
 
 @api.route(routes.LOGIN)
