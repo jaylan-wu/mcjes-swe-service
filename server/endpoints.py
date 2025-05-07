@@ -487,7 +487,7 @@ class Text(Resource):
         Deletes a text from the database using their key
         """
         success = txts.delete(_key)
-        if not success:
+        if success:
             return {MESSAGE: "Text not found"}, HTTPStatus.NOT_FOUND
         return {MESSAGE: 'Text deleted successfully'}, HTTPStatus.OK
 
