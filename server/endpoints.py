@@ -149,7 +149,14 @@ class Register(Resource):
             password = data.get(ppl.PASSWORD)
             # affiliation = data.get(ppl.AFFILIATION)
             roles = data.get(ppl.ROLES)
-
+            if not roles:
+                return {MESSAGE: "Missing roles"}, 400
+            if not first_name or not last_name:
+                return {MESSAGE: "Missing first or last name"}, 400
+            if not email:
+                return {MESSAGE: "No email address"}, 400
+            if not password:
+                return {MESSAGE: "No Password"}, 400
             if not all([first_name, last_name, email, password, roles]):
                 return {MESSAGE: "Missing required fields"}, 400
             if ppl.read_one(email):
