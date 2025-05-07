@@ -27,7 +27,7 @@ To set up the journal website locally, follow these steps:
 2. Make the development :
    ```bash
    make dev_env
-   
+
 3. Run all the tests (to run properly):
    ```bash
    make all_tests

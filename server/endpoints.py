@@ -120,7 +120,7 @@ USER_REGISTER_FLDS = api.model('UserRegister', {
     ppl.LAST_NAME: fields.String(required=True),
     ppl.EMAIL: fields.String(required=True),
     ppl.PASSWORD: fields.String(required=True),
-    ppl.AFFILIATION: fields.String(required=True),
+    ppl.AFFILIATION: fields.String,
     ppl.ROLES: fields.List(fields.String(required=True)),
 })
 
@@ -141,19 +141,27 @@ class Register(Resource):
         """
         Registers a new user
         """
-        data = request.get_json()
-        first_name = data.get(ppl.FIRST_NAME)
-        last_name = data.get(ppl.LAST_NAME)
-        email = data.get(ppl.EMAIL)
-        password = data.get(ppl.PASSWORD)
-        # affiliation = data.get(ppl.AFFILIATION)
-        roles = data.get(ppl.ROLES)
-        if ppl.read_one(email):
-            return {MESSAGE: "User already exists"}, 400
-        password_hash = generate_password_hash(password)
-        ppl.create(first_name, last_name, email, password_hash,
-                   "NYU", roles)
-        return {MESSAGE: "User registered successfully"}, 201
+        try:
+            data = request.get_json()
+            first_name = data.get(ppl.FIRST_NAME)
+            last_name = data.get(ppl.LAST_NAME)
+            email = data.get(ppl.EMAIL)
+            password = data.get(ppl.PASSWORD)
+            # affiliation = data.get(ppl.AFFILIATION)
+            roles = data.get(ppl.ROLES)
+
+            if not all([first_name, last_name, email, password, roles]):
+                return {MESSAGE: "Missing required fields"}, 400
+            if ppl.read_one(email):
+                return {MESSAGE: "User already exists"}, 400
+            password_hash = generate_password_hash(password)
+            ppl.create(first_name, last_name, email, password_hash,
+                       "NYU", roles)
+            return {MESSAGE: "User registered successfully"}, 201
+
+        except Exception as e:
+            print("Registration Error:", str(e))  # Log this
+            return {MESSAGE: "Internal Server Error", "error": str(e)}, 500
 
 
 @api.route(routes.LOGIN)
