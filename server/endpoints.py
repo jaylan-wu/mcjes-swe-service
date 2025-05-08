@@ -150,6 +150,15 @@ class Register(Resource):
         roles = data.get(ppl.ROLES)
         if ppl.read_one(email):
             return {MESSAGE: "User already exists"}, 400
+        # Role validation
+        if not roles or not isinstance(roles, list):
+            return {MESSAGE: "Invalid role list"}, 400
+        invalid_roles = [r for r in roles if not rls.exists(r)]
+        if invalid_roles:
+            return {
+                MESSAGE: f"Invalid role codes: {', '.join(invalid_roles)}"
+            }, 400
+
         password_hash = generate_password_hash(password)
         ppl.create(first_name, last_name, email, password_hash,
                    "NYU", roles)
