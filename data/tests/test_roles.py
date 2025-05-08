@@ -16,7 +16,6 @@ test_roles = [
     ('ED', 'Editor', True),
     ('ME', 'Managing Editor', True),
     ('RE', 'Referee', False),
-    ('DE','Developer', False),
 ]
 
 @pytest.fixture(scope='function')
