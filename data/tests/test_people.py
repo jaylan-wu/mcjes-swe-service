@@ -21,6 +21,7 @@ test_roles = [
     ('ED', 'Editor', True),
     ('ME', 'Managing Editor', True),
     ('RE', 'Referee', False),
+    ('DE', 'Developer', True),
 ]
 
 @pytest.fixture(scope='function')
@@ -98,23 +99,23 @@ def test_read_one_not_found():
 def test_update(temp_person):
     with pytest.raises(ValueError, match="Updating non-existent person: email='john@nyu.edu'"):
         ppl.update(TEST_INEXISTENT_EMAIL,
-                   {ppl.FIRST_NAME: 'Jane', 
-                    ppl.LAST_NAME: 'Doe', 
-                    ppl.AFFILIATION: 'NYU', 
-                    ppl.EMAIL: TEST_INEXISTENT_EMAIL, 
+                   {ppl.FIRST_NAME: 'Jane',
+                    ppl.LAST_NAME: 'Doe',
+                    ppl.AFFILIATION: 'NYU',
+                    ppl.EMAIL: TEST_INEXISTENT_EMAIL,
                     ppl.ROLES: [TEST_ROLE_CODE] })
     with pytest.raises(ValueError, match="Invalid role: NO"):
         ppl.update(TEST_EMAIL,
                    {ppl.FIRST_NAME: 'Jane',
-                    ppl.LAST_NAME: 'Doe', 
-                    ppl.AFFILIATION: 'NYU', 
-                    ppl.EMAIL: TEST_EMAIL, 
+                    ppl.LAST_NAME: 'Doe',
+                    ppl.AFFILIATION: 'NYU',
+                    ppl.EMAIL: TEST_EMAIL,
                     ppl.ROLES: ['NO'] })
     ppl.update(TEST_EMAIL,
                {ppl.FIRST_NAME: 'Buffalo',
-                ppl.LAST_NAME: 'Bill', 
+                ppl.LAST_NAME: 'Bill',
                 ppl.AFFILIATION: 'UBuffalo',
-                ppl.EMAIL: TEST_EMAIL, 
+                ppl.EMAIL: TEST_EMAIL,
                 ppl.ROLES: [TEST_ROLE_CODE] })
 
 
