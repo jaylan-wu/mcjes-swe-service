@@ -176,7 +176,7 @@ class Login(Resource):
                     'last_name': user[ppl.LAST_NAME],
                     'email': user[ppl.EMAIL],
                     # 'affiliation': user[ppl.AFFILIATION],
-                    'role': user.get(ppl.ROLES, ['Viewer'])[0]
+                    'roles': user.get(ppl.ROLES, ['Viewer'])
                     }
             }, 200
         else:
