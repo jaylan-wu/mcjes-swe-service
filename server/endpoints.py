@@ -175,7 +175,7 @@ class Login(Resource):
                     'first_name': user[ppl.FIRST_NAME],
                     'last_name': user[ppl.LAST_NAME],
                     'email': user[ppl.EMAIL],
-                    # 'affiliation': user[ppl.AFFILIATION],
+                    'affiliation': user[ppl.AFFILIATION],
                     'roles': user.get(ppl.ROLES, ['Viewer'])
                     }
             }, 200
