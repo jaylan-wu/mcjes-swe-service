@@ -297,19 +297,26 @@ class Manuscripts:
         state = manuscript[self.STATE]
         if action not in self.STATE_TABLE[state]:
             raise ValueError(f'Action {action} is not allowed.')
+
         new_state_func = self.STATE_TABLE[state][action][self.FUNC]
+
         if payload:
             manuscript.update(payload)
+
         if callable(new_state_func):
-            new_state = new_state_func(manuscript=manuscript)
+            new_state = new_state_func(
+                manuscript=manuscript,
+                **(payload or {})
+            )
         else:
             new_state = new_state_func
+
         dbc.update(
             self.MANUSCRIPTS_COLLECTION,
             {self.MANU_KEY: manu_key},
             {
                 self.STATE: new_state,
-                self.CURRENT_ACTIONS: self.get_actions(new_state),
+                self.CURRENT_ACTIONS: self.get_actions(new_state)
             }
         )
         return new_state
