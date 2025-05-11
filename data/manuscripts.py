@@ -277,20 +277,46 @@ class Manuscripts:
     def get_actions(self, state: str) -> list:
         return list(self.STATE_TABLE.get(state, {}).keys())
 
-    def handle_action(self, manu_key: int, action: str) -> str:
+    def handle_action(
+        self,
+        manu_key: int,
+        action: str,
+        force_state=None
+    ) -> str:
         manuscript = self.read_one(manu_key)
         if not manuscript:
-            raise ValueError(f'Manuscript with key {manu_key} not found.')
+            raise ValueError(
+                f"Manuscript with key {manu_key} not found."
+            )
+        if action == "Force State":
+            if not force_state or not self.STATES.is_valid_state(force_state):
+                raise ValueError(
+                    f"Invalid target state: {force_state}"
+                )
+            dbc.update(
+                self.MANUSCRIPTS_COLLECTION,
+                {self.MANU_KEY: manu_key},
+                {
+                    self.STATE: force_state,
+                    self.CURRENT_ACTIONS: self.get_actions(force_state)
+                }
+            )
+            return force_state
         state = manuscript[self.STATE]
-        if action not in self.STATE_TABLE[state]:
-            raise ValueError(f'Action {action} is not allowed.')
-        new_state_func = self.STATE_TABLE[state][action][self.FUNC]
-        if callable(new_state_func):
-            new_state = new_state_func(manuscript=manuscript)
-        else:
-            new_state = new_state_func
-        dbc.update(self.MANUSCRIPTS_COLLECTION,
-                   {self.MANU_KEY: manu_key},
-                   {self.STATE: new_state,
-                    self.CURRENT_ACTIONS: self.get_actions(new_state)})
+        if action not in self.STATE_TABLE.get(state, {}):
+            raise ValueError(
+                f"Action {action} is not allowed."
+            )
+        func = self.STATE_TABLE[state][action][self.FUNC]
+        new_state = (
+            func(manuscript=manuscript) if callable(func) else func
+        )
+        dbc.update(
+            self.MANUSCRIPTS_COLLECTION,
+            {self.MANU_KEY: manu_key},
+            {
+                self.STATE: new_state,
+                self.CURRENT_ACTIONS: self.get_actions(new_state)
+            }
+        )
         return new_state
