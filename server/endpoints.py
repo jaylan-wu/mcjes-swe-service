@@ -271,10 +271,9 @@ class Manuscript(Resource):
         Deletes a manuscript from the database using their manu_key
         """
         try:
-            _manukey = int(_manukey) 
+            _manukey = int(_manukey)
         except ValueError:
             return {MESSAGE: "Invalid manuscript key"}, HTTPStatus.BAD_REQUEST
-
         success = manu.delete(_manukey)
         if not success:
             return {MESSAGE: "Manuscript not found"}, HTTPStatus.NOT_FOUND
