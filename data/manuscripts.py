@@ -285,7 +285,12 @@ class Manuscripts:
     def get_actions(self, state: str) -> list:
         return list(self.STATE_TABLE.get(state, {}).keys())
 
-    def handle_action(self, manu_key: int, action: str) -> str:
+    def handle_action(
+        self,
+        manu_key: int,
+        action: str,
+        payload: dict = None
+    ) -> str:
         manuscript = self.read_one(manu_key)
         if not manuscript:
             raise ValueError(f'Manuscript with key {manu_key} not found.')
@@ -293,12 +298,18 @@ class Manuscripts:
         if action not in self.STATE_TABLE[state]:
             raise ValueError(f'Action {action} is not allowed.')
         new_state_func = self.STATE_TABLE[state][action][self.FUNC]
+        if payload:
+            manuscript.update(payload)
         if callable(new_state_func):
             new_state = new_state_func(manuscript=manuscript)
         else:
             new_state = new_state_func
-        dbc.update(self.MANUSCRIPTS_COLLECTION,
-                   {self.MANU_KEY: manu_key},
-                   {self.STATE: new_state,
-                    self.CURRENT_ACTIONS: self.get_actions(new_state)})
+        dbc.update(
+            self.MANUSCRIPTS_COLLECTION,
+            {self.MANU_KEY: manu_key},
+            {
+                self.STATE: new_state,
+                self.CURRENT_ACTIONS: self.get_actions(new_state),
+            }
+        )
         return new_state
