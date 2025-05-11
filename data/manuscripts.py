@@ -82,18 +82,17 @@ class ManuscriptActions:
     def is_valid_action(self, action: str) -> bool:
         return action in self.VALID_ACTIONS
 
-    def assign_ref(self, manuscript: dict, **kwargs) -> str:
+    def assign_ref(self, manuscript: dict, ref: str = None) -> str:
         manu = Manuscripts()
-        ref = kwargs.get("ref") or manuscript.get("ref")
+        if not ref:
+            ref = manuscript.get("ref")
         if not ref:
             raise ValueError("Referee email is required to assign a referee.")
         if ref not in manuscript[manu.REFEREES]:
             manuscript[manu.REFEREES].append(ref)
-            dbc.update(
-                manu.MANUSCRIPTS_COLLECTION,
-                {manu.MANU_KEY: manuscript[manu.MANU_KEY]},
-                {manu.REFEREES: manuscript[manu.REFEREES]}
-            )
+        dbc.update(manu.MANUSCRIPTS_COLLECTION,
+                   {manu.MANU_KEY: manuscript[manu.MANU_KEY]},
+                   {manu.REFEREES: manuscript[manu.REFEREES]})
         return manu.STATES.REF_REVIEW
 
     def remove_ref(self, manuscript: dict, ref: str) -> str:
