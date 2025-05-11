@@ -250,21 +250,40 @@ class Manuscript(Resource):
         """
         Updates a manuscript using their unique manuscript key
         """
-        data = request.get_json()
-        if not data:
-            return {MESSAGE: "Invalid data"}, HTTPStatus.BAD_REQUEST
-        if manu.ACTION in data:
-            try:
-                response = manu.handle_action(int(_manukey), data[manu.ACTION])
-                return {{MESSAGE: f"Manuscript action executed: {response}"},
-                        HTTPStatus.OK}
-            except ValueError as e:
-                return {MESSAGE: str(e)}, HTTPStatus.BAD_REQUEST
-        else:
-            updated_manu = manu.update(int(_manukey), data)
-            if updated_manu is None:
-                return {MESSAGE: "Manuscript not found"}, HTTPStatus.NOT_FOUND
-        return ({MESSAGE: "Manuscript updated successfully"}, HTTPStatus.OK)
+        try:
+            data = request.get_json()
+            print("PUT /manuscripts received")
+            print(f"Manuscript key: {_manukey}")
+            print("Payload:", data)
+
+            if not data:
+                return {MESSAGE: "Invalid data"}, HTTPStatus.BAD_REQUEST
+            if manu.ACTION in data:
+                try:
+                    response = manu.handle_action(
+                        int(_manukey),
+                        data[manu.ACTION]
+                    )
+                    return {
+                        MESSAGE: f"Executed: {response}"
+                    }, HTTPStatus.OK
+                except ValueError as e:
+                    print("Action handler error:", e)
+                    return {MESSAGE: str(e)}, HTTPStatus.BAD_REQUEST
+            else:
+                updated_manu = manu.update(int(_manukey), data)
+                if updated_manu is None:
+                    print("Update failed: no manuscript found")
+                    return {
+                        MESSAGE: "Manuscript not found"
+                    }, HTTPStatus.NOT_FOUND
+
+                return {
+                    MESSAGE: "Manuscript updated successfully"
+                }, HTTPStatus.OK
+        except Exception as e:
+            print("Unhandled exception in PUT /manuscripts:", e)
+            return {MESSAGE: "Error"}, HTTPStatus.INTERNAL_SERVER_ERROR
 
     def delete(self, _manukey):
         """
