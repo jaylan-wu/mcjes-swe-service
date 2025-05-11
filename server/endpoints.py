@@ -315,12 +315,20 @@ class ManuscriptAction(Resource):
         Updates a manuscript state through its action
         """
         data = request.get_json()
+        print(f"[PUT /manuscripts/action/{_manukey}] Payload:", data)
+
+        action = data.get(manu.ACTION)
+        if not action:
+            return {MESSAGE: "Missing 'action' field"}, HTTPStatus.BAD_REQUEST
+
         try:
-            response = manu.handle_action(int(_manukey), data[manu.ACTION])
-            return {{MESSAGE: f"Manuscript action executed: {response}"},
-                    HTTPStatus.OK}
+            result = manu.handle_action(int(_manukey), action)
+            return {MESSAGE: f"Action executed: {result}"}, HTTPStatus.OK
         except ValueError as e:
             return {MESSAGE: str(e)}, HTTPStatus.BAD_REQUEST
+        except Exception as e:
+            print("handle_action() failed:", e)
+            return {MESSAGE: "Error"}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @api.route(f'{routes.MANUSCRIPTS}{routes.PEOPLE}/<_email>')
